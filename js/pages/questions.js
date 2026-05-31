@@ -1,6 +1,7 @@
-// 疑問箱ページ
+import { storage } from '../firebase.js';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { getCurrentUser, isTeacher, isStudent } from '../auth.js';
-import { getQuestions, addQuestion, updateQuestion, getStudents, getSettings } from '../store.js';
+import { getQuestions, addQuestion, updateQuestion, getStudents, getSettings, generateId } from '../store.js';
 import { updatePageTitle, showToast, showModal, closeModal } from '../app.js';
 
 let filterStatus = 'all';
@@ -212,7 +213,7 @@ function showQuestionForm(container, settings) {
     `,
   });
 
-  let imageData = null;
+  let imageFile = null;
 
   // ファイルアップロード
   const uploadArea = document.getElementById('upload-area');
@@ -244,7 +245,7 @@ function showQuestionForm(container, settings) {
   });
 
   document.getElementById('remove-image')?.addEventListener('click', () => {
-    imageData = null;
+    imageFile = null;
     uploadArea.style.display = '';
     preview.style.display = 'none';
   });
@@ -258,19 +259,16 @@ function showQuestionForm(container, settings) {
       showToast('画像は5MB以下にしてください', 'warning');
       return;
     }
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      imageData = e.target.result;
-      previewImg.src = imageData;
-      uploadArea.style.display = 'none';
-      preview.style.display = '';
-    };
-    reader.readAsDataURL(file);
+    imageFile = file;
+    previewImg.src = URL.createObjectURL(file);
+    uploadArea.style.display = 'none';
+    preview.style.display = '';
   }
 
   // 送信
   document.getElementById('modal-cancel')?.addEventListener('click', closeModal);
-  document.getElementById('modal-save')?.addEventListener('click', () => {
+  document.getElementById('modal-save')?.addEventListener('click', async (e) => {
+    const btn = e.target;
     const form = document.getElementById('question-form');
     const fd = new FormData(form);
     const comment = fd.get('comment');
@@ -281,19 +279,36 @@ function showQuestionForm(container, settings) {
       return;
     }
 
-    addQuestion({
-      studentId: selectedStudentId || getCurrentUser().id,
-      subject,
-      imageData,
-      comment,
-      teacherReply: '',
-      status: 'open',
-      createdAt: new Date().toISOString(),
-    });
+    btn.disabled = true;
+    btn.textContent = '送信中...';
 
-    showToast('質問を投稿しました！先生の回答をお待ちください。', 'success');
-    closeModal();
-    renderQuestions(container);
+    let imageUrl = null;
+    try {
+      if (imageFile) {
+        const fileRef = ref(storage, `questions/${generateId()}_${imageFile.name}`);
+        await uploadBytes(fileRef, imageFile);
+        imageUrl = await getDownloadURL(fileRef);
+      }
+
+      addQuestion({
+        studentId: selectedStudentId || getCurrentUser().id,
+        subject,
+        imageData: imageUrl,
+        comment,
+        teacherReply: '',
+        status: 'open',
+        createdAt: new Date().toISOString(),
+      });
+
+      showToast('質問を投稿しました！先生の回答をお待ちください。', 'success');
+      closeModal();
+      renderQuestions(container);
+    } catch (err) {
+      console.error('Upload failed:', err);
+      showToast('画像のアップロードに失敗しました', 'error');
+      btn.disabled = false;
+      btn.textContent = '投稿する';
+    }
   });
 }
 
