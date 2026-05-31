@@ -1,0 +1,1005 @@
+/* ============================================================
+   pages.css — Page-Specific Styles
+   ============================================================ */
+
+
+/* ════════════════════════════════════════════════════════════
+   LOGIN PAGE
+   ════════════════════════════════════════════════════════════ */
+
+.login-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--space-6);
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(230, 126, 34, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(243, 156, 18, 0.06) 0%, transparent 50%),
+    var(--bg-primary);
+}
+
+.login-title {
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: var(--space-2);
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.login-subtitle {
+  font-size: var(--text-lg);
+  color: var(--text-secondary);
+  text-align: center;
+  margin-bottom: var(--space-10);
+}
+
+.login-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-4);
+  max-width: 800px;
+  width: 100%;
+}
+
+.login-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-8) var(--space-4);
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 2px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  text-align: center;
+}
+
+.login-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: var(--shadow-lg);
+}
+
+.login-card:active {
+  transform: translateY(-2px);
+}
+
+.login-card.selected,
+.login-card:focus-visible {
+  border-color: var(--accent-primary);
+  box-shadow: var(--shadow-glow);
+}
+
+.login-card .avatar {
+  width: 72px;
+  height: 72px;
+  font-size: var(--text-2xl);
+  margin-bottom: var(--space-2);
+}
+
+.login-card .name {
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.login-card .role {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  padding: 2px var(--space-3);
+  background: var(--glass-bg);
+  border-radius: var(--radius-full);
+}
+
+@media (max-width: 768px) {
+  .login-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .login-cards {
+    grid-template-columns: 1fr;
+    max-width: 280px;
+  }
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   DASHBOARD
+   ════════════════════════════════════════════════════════════ */
+
+.dashboard-welcome {
+  margin-bottom: var(--space-8);
+}
+
+.dashboard-welcome h2 {
+  font-size: var(--text-2xl);
+  margin-bottom: var(--space-2);
+}
+
+.dashboard-welcome p {
+  color: var(--text-secondary);
+}
+
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-normal);
+}
+
+.stat-card:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.stat-card .stat-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  font-size: var(--text-xl);
+  flex-shrink: 0;
+}
+
+.stat-card .stat-icon.icon-orange  { background: rgba(230, 126, 34, 0.15); color: var(--accent-primary); }
+.stat-card .stat-icon.icon-green   { background: rgba(46, 204, 113, 0.15); color: var(--status-success); }
+.stat-card .stat-icon.icon-blue    { background: rgba(74, 144, 217, 0.15); color: var(--status-info); }
+.stat-card .stat-icon.icon-purple  { background: rgba(155, 89, 182, 0.15); color: var(--subject-science); }
+
+.stat-card .stat-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.stat-card .stat-value {
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.stat-card .stat-label {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   WEEKLY SCHEDULE (週間予定表)
+   ════════════════════════════════════════════════════════════ */
+
+.weekly-table-container {
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.weekly-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 2px;
+  table-layout: fixed;
+}
+
+.weekly-table th {
+  padding: var(--space-3) var(--space-2);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #fff;
+  border-radius: var(--radius-sm);
+}
+
+/* Subject-colored headers */
+.weekly-table th.th-english  { background: rgba(74, 144, 217, 0.7); }
+.weekly-table th.th-math     { background: rgba(231, 76, 60, 0.7); }
+.weekly-table th.th-japanese { background: rgba(46, 204, 113, 0.7); }
+.weekly-table th.th-science  { background: rgba(155, 89, 182, 0.7); }
+.weekly-table th.th-social   { background: rgba(243, 156, 18, 0.7); }
+.weekly-table th.th-default  { background: var(--bg-tertiary); color: var(--text-secondary); }
+
+.weekly-table td {
+  padding: var(--space-2);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-sm);
+  text-align: center;
+  font-size: var(--text-sm);
+  vertical-align: middle;
+  transition: background var(--transition-fast);
+  position: relative;
+}
+
+.weekly-table td:hover {
+  background: var(--bg-tertiary);
+}
+
+.weekly-table td.completed {
+  background: rgba(46, 204, 113, 0.08);
+}
+
+.weekly-table td.completed::after {
+  content: '✓';
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  font-size: 10px;
+  color: var(--status-success);
+  opacity: 0.7;
+}
+
+.weekly-table .day-label {
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-align: left;
+  padding-left: var(--space-3);
+  background: var(--bg-tertiary);
+  width: 50px;
+  white-space: nowrap;
+}
+
+.weekly-table .type-label {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  font-weight: 500;
+  width: 40px;
+  text-align: center;
+  background: var(--bg-tertiary);
+}
+
+.weekly-table .cell-input {
+  width: 100%;
+  padding: var(--space-1) var(--space-2);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: var(--text-xs);
+  text-align: center;
+  transition: all var(--transition-fast);
+}
+
+.weekly-table .cell-input:hover {
+  border-color: var(--border-color);
+}
+
+.weekly-table .cell-input:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  background: var(--bg-surface);
+}
+
+.weekly-table .cell-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--border-light);
+  background: transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  color: transparent;
+  font-size: 14px;
+}
+
+.weekly-table .cell-check:hover {
+  border-color: var(--accent-primary);
+}
+
+.weekly-table .cell-check.checked {
+  background: var(--status-success);
+  border-color: var(--status-success);
+  color: #fff;
+  animation: scaleIn 0.2s var(--ease-out-back);
+}
+
+/* Week Navigator */
+.week-navigator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+}
+
+.week-navigator .week-label {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--text-primary);
+  min-width: 200px;
+  text-align: center;
+}
+
+/* Goals Section */
+.goals-section {
+  padding: var(--space-5);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  margin-top: var(--space-6);
+}
+
+.goals-section h4 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+  color: var(--accent-primary);
+}
+
+/* Teacher Comment */
+.teacher-comment {
+  padding: var(--space-5);
+  background: rgba(74, 144, 217, 0.06);
+  border: 1px solid rgba(74, 144, 217, 0.15);
+  border-left: 3px solid var(--status-info);
+  border-radius: var(--radius-lg);
+  margin-top: var(--space-4);
+}
+
+.teacher-comment .comment-author {
+  font-size: var(--text-xs);
+  color: var(--status-info);
+  font-weight: 600;
+  margin-bottom: var(--space-2);
+}
+
+.teacher-comment .comment-body {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: var(--leading-loose);
+}
+
+/* Reflection Section */
+.reflection-section {
+  padding: var(--space-5);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  margin-top: var(--space-4);
+}
+
+.reflection-section h4 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+  color: var(--status-success);
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   HOMEWORK PAGE (宿題ページ)
+   ════════════════════════════════════════════════════════════ */
+
+.homework-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.homework-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-normal);
+  cursor: pointer;
+  position: relative;
+}
+
+.homework-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  border-radius: var(--radius-full) 0 0 var(--radius-full);
+}
+
+/* Subject border colors */
+.homework-item.english::before  { background: var(--subject-english); }
+.homework-item.math::before     { background: var(--subject-math); }
+.homework-item.japanese::before { background: var(--subject-japanese); }
+.homework-item.science::before  { background: var(--subject-science); }
+.homework-item.social::before   { background: var(--subject-social); }
+
+.homework-item:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateX(4px);
+  box-shadow: var(--shadow-sm);
+}
+
+.homework-item .subject-tag {
+  flex-shrink: 0;
+}
+
+.homework-item .homework-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.homework-item .homework-title {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.homework-item .homework-desc {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.homework-item .due-date {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.homework-item .due-date.overdue {
+  color: var(--status-danger);
+  font-weight: 600;
+}
+
+.homework-item .due-date.today {
+  color: var(--status-warning);
+  font-weight: 600;
+}
+
+.homework-item .status {
+  flex-shrink: 0;
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   TEST RESULTS PAGE (テスト結果ページ)
+   ════════════════════════════════════════════════════════════ */
+
+.test-input-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-4);
+  padding: var(--space-6);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+}
+
+.test-history {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.test-score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.test-score .score-circle {
+  width: 100px;
+  height: 100px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: conic-gradient(
+    var(--accent-primary) calc(var(--score-pct, 0) * 1%),
+    var(--bg-surface) calc(var(--score-pct, 0) * 1%)
+  );
+}
+
+.test-score .score-circle::after {
+  content: '';
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-full);
+  background: var(--bg-secondary);
+  position: absolute;
+}
+
+.test-score .score-value {
+  position: relative;
+  z-index: 1;
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.test-score .score-label {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin-top: var(--space-2);
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   STUDY TIME PAGE (勉強時間ページ)
+   ════════════════════════════════════════════════════════════ */
+
+.timer-display {
+  font-family: var(--font-mono);
+  font-size: clamp(3rem, 10vw, 5rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  text-align: center;
+  letter-spacing: 0.05em;
+  padding: var(--space-8) 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.timer-display.running {
+  color: var(--accent-primary);
+  text-shadow: 0 0 30px rgba(230, 126, 34, 0.3);
+}
+
+.timer-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+}
+
+.timer-controls .btn {
+  min-width: 120px;
+}
+
+.study-log-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.study-log-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+}
+
+.study-log-item .log-date {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  min-width: 80px;
+}
+
+.study-log-item .log-subject {
+  flex-shrink: 0;
+}
+
+.study-log-item .log-duration {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-left: auto;
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   QUESTION BOX PAGE (疑問箱ページ)
+   ════════════════════════════════════════════════════════════ */
+
+.question-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.question-card {
+  padding: var(--space-5);
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-normal);
+}
+
+.question-card:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.question-card .question-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+
+.question-card .question-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.question-card .question-body {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: var(--leading-normal);
+  margin-bottom: var(--space-4);
+}
+
+.question-card .image-preview {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-4);
+}
+
+.question-card .image-preview img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.question-card .image-preview img:hover {
+  border-color: var(--accent-primary);
+  transform: scale(1.05);
+}
+
+.question-card .question-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Upload area */
+.question-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-10);
+  border: 2px dashed var(--border-light);
+  border-radius: var(--radius-lg);
+  background: var(--glass-bg);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  text-align: center;
+}
+
+.question-upload:hover,
+.question-upload.dragover {
+  border-color: var(--accent-primary);
+  background: rgba(230, 126, 34, 0.05);
+}
+
+.question-upload .upload-icon {
+  font-size: 2.5rem;
+  color: var(--text-muted);
+}
+
+.question-upload .upload-text {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.question-upload .upload-hint {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+/* Reply area */
+.question-reply {
+  margin-top: var(--space-4);
+  padding: var(--space-4);
+  background: rgba(74, 144, 217, 0.06);
+  border: 1px solid rgba(74, 144, 217, 0.15);
+  border-left: 3px solid var(--status-info);
+  border-radius: var(--radius-md);
+}
+
+.question-reply .reply-author {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--status-info);
+  margin-bottom: var(--space-2);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.question-reply .reply-body {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: var(--leading-normal);
+}
+
+.question-reply .reply-images {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-top: var(--space-3);
+}
+
+.question-reply .reply-images img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   STATISTICS PAGE (統計ページ)
+   ════════════════════════════════════════════════════════════ */
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--space-4);
+}
+
+.chart-card {
+  padding: var(--space-5);
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  min-height: 280px;
+}
+
+.chart-card .chart-title {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-4);
+}
+
+.chart-card .chart-container {
+  width: 100%;
+  height: 220px;
+  position: relative;
+}
+
+/* Heatmap */
+.heatmap {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+
+.heatmap-cell {
+  aspect-ratio: 1;
+  border-radius: 3px;
+  background: var(--bg-surface);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+  position: relative;
+}
+
+.heatmap-cell:hover {
+  transform: scale(1.3);
+  z-index: 1;
+}
+
+/* Activity levels 1–4 */
+.heatmap-cell.level-0 { background: var(--bg-surface); }
+.heatmap-cell.level-1 { background: rgba(230, 126, 34, 0.2); }
+.heatmap-cell.level-2 { background: rgba(230, 126, 34, 0.4); }
+.heatmap-cell.level-3 { background: rgba(230, 126, 34, 0.6); }
+.heatmap-cell.level-4 { background: rgba(230, 126, 34, 0.85); }
+
+
+/* ════════════════════════════════════════════════════════════
+   SETTINGS PAGE (設定ページ)
+   ════════════════════════════════════════════════════════════ */
+
+.settings-section {
+  margin-bottom: var(--space-8);
+}
+
+.settings-section h3 {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.settings-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.settings-item:last-child {
+  border-bottom: none;
+}
+
+.settings-item .settings-label {
+  flex: 1;
+}
+
+.settings-item .settings-label h4 {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.settings-item .settings-label p {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.settings-item .settings-control {
+  flex-shrink: 0;
+  margin-left: var(--space-4);
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.toggle-switch input {
+  appearance: none;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-surface);
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.toggle-switch input:checked {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+}
+
+.toggle-switch input::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 16px;
+  height: 16px;
+  background: #fff;
+  border-radius: var(--radius-full);
+  transition: transform var(--transition-fast) var(--ease-out-back);
+}
+
+.toggle-switch input:checked::after {
+  transform: translateX(20px);
+}
+
+/* Schedule Grid */
+.schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+.schedule-grid .day-header {
+  text-align: center;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+  padding: var(--space-2) 0;
+}
+
+.schedule-grid .day-slot {
+  padding: var(--space-3);
+  text-align: center;
+  font-size: var(--text-xs);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  min-height: 60px;
+}
+
+.schedule-grid .day-slot:hover {
+  border-color: var(--accent-primary);
+}
+
+.schedule-grid .day-slot.has-class {
+  background: rgba(230, 126, 34, 0.1);
+  border-color: rgba(230, 126, 34, 0.3);
+}
+
+.schedule-grid .day-slot .slot-time {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.schedule-grid .day-slot .slot-subject {
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+@media (max-width: 768px) {
+  .schedule-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .test-input-form {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+
+  .settings-item .settings-control {
+    margin-left: 0;
+  }
+}
