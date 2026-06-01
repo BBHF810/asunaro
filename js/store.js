@@ -18,7 +18,6 @@ const DEFAULT_DATA = {
   assignments: [],
   testResults: [],
   studyLogs: [],
-  questions: [],
   settings: {
     lessonDays: [
       { dayOfWeek: 2, time: '19:00' },
@@ -59,7 +58,7 @@ export function initStore() {
   if (isInitialized) return;
   isInitialized = true;
 
-  const collections = ['users', 'weeklyPlans', 'assignments', 'testResults', 'studyLogs', 'questions'];
+  const collections = ['users', 'weeklyPlans', 'assignments', 'testResults', 'studyLogs'];
   let loadedCount = 0;
   const totalToLoad = collections.length + 1; // +1 for settings
 
@@ -128,7 +127,7 @@ export function getData() {
  * 全データ保存（非推奨・インポート時のみ使用）
  */
 export function saveData(data) {
-  const collections = ['users', 'weeklyPlans', 'assignments', 'testResults', 'studyLogs', 'questions'];
+  const collections = ['users', 'weeklyPlans', 'assignments', 'testResults', 'studyLogs'];
   const promises = [];
   collections.forEach(colName => {
     if (data[colName]) {
@@ -372,37 +371,6 @@ function calcStreak(byDate) {
 }
 
 // ========================================
-// 疑問箱
-// ========================================
-
-export function getQuestions(studentId, status) {
-  let questions = getData().questions.filter(q => q.studentId === studentId);
-  if (status) questions = questions.filter(q => q.status === status);
-  return questions;
-}
-
-export function addQuestion(question) {
-  question.id = question.id || generateId();
-  question.status = question.status || 'open';
-  question.createdAt = question.createdAt || new Date().toISOString();
-  setDoc(doc(db, 'questions', question.id), question);
-  // 楽観的UI更新
-  localState.questions.push(question);
-  emitDataChange('questions', { action: 'add' });
-  return question;
-}
-
-export function updateQuestion(id, updates) {
-  updates.updatedAt = new Date().toISOString();
-  updateDoc(doc(db, 'questions', id), updates);
-  // 楽観的UI更新
-  const idx = localState.questions.findIndex(q => q.id === id);
-  if (idx >= 0) Object.assign(localState.questions[idx], updates);
-  emitDataChange('questions', { action: 'update' });
-  return { id, ...updates };
-}
-
-// ========================================
 // 設定
 // ========================================
 
@@ -436,7 +404,7 @@ export function importData(jsonString) {
     return { success: false, error: '無効なJSONフォーマットです。' };
   }
 
-  const requiredKeys = ['users', 'weeklyPlans', 'assignments', 'testResults', 'studyLogs', 'questions', 'settings'];
+  const requiredKeys = ['users', 'weeklyPlans', 'assignments', 'testResults', 'studyLogs', 'settings'];
   for (const key of requiredKeys) {
     if (!(key in parsed)) return { success: false, error: `必須フィールド "${key}" が見つかりません。` };
   }

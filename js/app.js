@@ -8,7 +8,6 @@ import { renderSchedule } from './pages/schedule.js';
 import { renderHomework } from './pages/homework.js';
 import { renderTests } from './pages/tests.js';
 import { renderStudyTime } from './pages/study-time.js';
-import { renderQuestions } from './pages/questions.js';
 import { renderStats } from './pages/stats.js';
 import { renderSettings } from './pages/settings.js';
 import { renderSidebar } from './components/sidebar.js';
@@ -58,12 +57,6 @@ function registerRoutes() {
     title: '勉強時間',
     render: renderStudyTime,
     roles: ['teacher', 'student', 'parent'],
-  });
-
-  addRoute('/questions', {
-    title: '疑問箱',
-    render: renderQuestions,
-    roles: ['teacher', 'student'],
   });
 
   addRoute('/stats', {

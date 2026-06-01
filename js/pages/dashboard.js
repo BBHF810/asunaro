@@ -1,6 +1,6 @@
 // ダッシュボードページ
 import { getCurrentUser } from '../auth.js';
-import { getAssignments, getStudyStats, getQuestions, getTestResults, getStudents, getSettings, updateAssignment } from '../store.js';
+import { getAssignments, getStudyStats, getTestResults, getStudents, getSettings, updateAssignment } from '../store.js';
 import { navigate } from '../router.js';
 import { updatePageTitle } from '../app.js';
 
@@ -30,7 +30,6 @@ function renderTeacherDashboard(container, user) {
     const completed = assignments.filter(a => a.status === 'completed').length;
     const total = assignments.length;
     const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
-    const openQuestions = getQuestions(student.id, 'open').length;
     const recentTests = getTestResults(student.id).slice(-3);
 
     return `
@@ -43,7 +42,6 @@ function renderTeacherDashboard(container, user) {
               <span class="text-muted">生徒</span>
             </div>
           </div>
-          ${openQuestions > 0 ? `<span class="badge badge-danger">${openQuestions}件の質問</span>` : ''}
         </div>
         <div class="card-body">
           <div class="stat-row">
@@ -74,8 +72,6 @@ function renderTeacherDashboard(container, user) {
     `;
   }).join('');
 
-  const allOpenQuestions = students.reduce((sum, s) => sum + getQuestions(s.id, 'open').length, 0);
-
   container.innerHTML = `
     <div class="dashboard">
       <div class="dashboard-welcome animate-fadeIn">
@@ -89,13 +85,6 @@ function renderTeacherDashboard(container, user) {
           <div class="stat-card-content">
             <span class="stat-card-value">${students.length}</span>
             <span class="stat-card-label">生徒数</span>
-          </div>
-        </div>
-        <div class="stat-card" onclick="location.hash='#/questions'" style="cursor:pointer">
-          <div class="stat-card-icon" style="background: linear-gradient(135deg, #E74C3C, #C0392B)">❓</div>
-          <div class="stat-card-content">
-            <span class="stat-card-value">${allOpenQuestions}</span>
-            <span class="stat-card-label">未回答の質問</span>
           </div>
         </div>
       </div>
@@ -113,8 +102,6 @@ function renderStudentDashboard(container, user) {
   const pendingAssignments = assignments.filter(a => a.status !== 'completed');
   const completedToday = assignments.filter(a => a.status === 'completed' && isToday(a.completedAt));
   const stats = getStudyStats(user.id);
-  const openQuestions = getQuestions(user.id, 'open');
-  const answeredQuestions = getQuestions(user.id, 'answered');
   const settings = getSettings();
 
   container.innerHTML = `
@@ -146,15 +133,6 @@ function renderStudentDashboard(container, user) {
             <span class="stat-card-label">今日の勉強(分)</span>
           </div>
         </div>
-        ${answeredQuestions.length > 0 ? `
-        <div class="stat-card" onclick="location.hash='#/questions'" style="cursor:pointer">
-          <div class="stat-card-icon" style="background: linear-gradient(135deg, #4A90D9, #357ABD)">💡</div>
-          <div class="stat-card-content">
-            <span class="stat-card-value">${answeredQuestions.length}</span>
-            <span class="stat-card-label">新着回答</span>
-          </div>
-        </div>
-        ` : ''}
       </div>
 
       ${pendingAssignments.length > 0 ? `
@@ -194,13 +172,6 @@ function renderStudentDashboard(container, user) {
             <div style="font-size: 2rem; margin-bottom: var(--space-2)">⏱️</div>
             <h4>勉強を始める</h4>
             <p class="text-muted text-sm">タイマーで記録する</p>
-          </div>
-        </div>
-        <div class="card quick-action animate-slideUp" onclick="location.hash='#/questions'" style="cursor:pointer">
-          <div class="card-body" style="text-align:center">
-            <div style="font-size: 2rem; margin-bottom: var(--space-2)">❓</div>
-            <h4>質問する</h4>
-            <p class="text-muted text-sm">疑問箱に投稿する</p>
           </div>
         </div>
       </div>
