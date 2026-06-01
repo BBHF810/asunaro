@@ -4,7 +4,7 @@
  */
 
 import { db } from './firebase.js';
-import { collection, doc, onSnapshot, setDoc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, doc, onSnapshot, setDoc, updateDoc, deleteDoc, getDoc } from 'firebase/firestore';
 
 // データモデルの初期値
 const DEFAULT_DATA = {
@@ -37,6 +37,13 @@ const DEFAULT_DATA = {
 
 let localState = structuredClone(DEFAULT_DATA);
 let isInitialized = false;
+let initPromiseResolve = null;
+let storeReady = false;
+
+// initStoreが完了するまで待てるPromise
+export const storeReadyPromise = new Promise((resolve) => {
+  initPromiseResolve = resolve;
+});
 
 // イベントターゲット（カスタムイベント用）
 const storeEventTarget = new EventTarget();
@@ -53,11 +60,19 @@ export function initStore() {
   isInitialized = true;
 
   const collections = ['users', 'weeklyPlans', 'assignments', 'testResults', 'studyLogs', 'questions'];
-  
+  let loadedCount = 0;
+  const totalToLoad = collections.length + 1; // +1 for settings
+
   collections.forEach(colName => {
     onSnapshot(collection(db, colName), (snapshot) => {
       localState[colName] = snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
       emitDataChange(colName, { action: 'sync' });
+      loadedCount++;
+      checkReady(loadedCount, totalToLoad);
+    }, (error) => {
+      console.error(`Firestore listen error on ${colName}:`, error);
+      loadedCount++;
+      checkReady(loadedCount, totalToLoad);
     });
   });
 
@@ -68,20 +83,36 @@ export function initStore() {
     } else {
       // 初回起動時など設定がない場合は初期設定を保存
       setDoc(doc(db, 'settings', 'global'), DEFAULT_DATA.settings);
-      localState.settings = DEFAULT_DATA.settings;
+      localState.settings = structuredClone(DEFAULT_DATA.settings);
     }
     emitDataChange('settings', { action: 'sync' });
+    loadedCount++;
+    checkReady(loadedCount, totalToLoad);
+  }, (error) => {
+    console.error('Firestore listen error on settings:', error);
+    loadedCount++;
+    checkReady(loadedCount, totalToLoad);
   });
 
-  // Usersの初期化チェック
-  const unsubscribeUsers = onSnapshot(collection(db, 'users'), (snapshot) => {
-    if (snapshot.empty) {
+  // Usersの初期化チェック（一度だけ）
+  getDoc(doc(db, 'users', 'teacher')).then((docSnap) => {
+    if (!docSnap.exists()) {
       DEFAULT_DATA.users.forEach(u => {
         setDoc(doc(db, 'users', u.id), u);
       });
     }
-    unsubscribeUsers(); // 一度チェックしたら解除
+  }).catch(err => {
+    console.warn('Users init check failed:', err);
   });
+}
+
+function checkReady(count, total) {
+  if (!storeReady && count >= total) {
+    storeReady = true;
+    if (initPromiseResolve) {
+      initPromiseResolve();
+    }
+  }
 }
 
 /**
@@ -97,25 +128,26 @@ export function getData() {
  * 全データ保存（非推奨・インポート時のみ使用）
  */
 export function saveData(data) {
-  // インポート用の処理（すべてのコレクションを上書き）
   const collections = ['users', 'weeklyPlans', 'assignments', 'testResults', 'studyLogs', 'questions'];
+  const promises = [];
   collections.forEach(colName => {
     if (data[colName]) {
       data[colName].forEach(item => {
-        setDoc(doc(db, colName, item.id), item);
+        promises.push(setDoc(doc(db, colName, item.id), item));
       });
     }
   });
   if (data.settings) {
-    setDoc(doc(db, 'settings', 'global'), data.settings);
+    promises.push(setDoc(doc(db, 'settings', 'global'), data.settings));
   }
+  return Promise.all(promises);
 }
 
 /**
  * ユニークID生成
  */
 export function generateId() {
-  return doc(collection(db, 'dummy')).id; // FirestoreのID生成を利用
+  return doc(collection(db, 'dummy')).id;
 }
 
 // ========================================
@@ -127,19 +159,26 @@ export function getUsers() {
 }
 
 export function getUser(id) {
-  return getData().users.find(u => u.id === id);
+  // ローカルキャッシュにまだデータがない場合はデフォルトから探す
+  const found = getData().users.find(u => u.id === id);
+  if (found) return found;
+  return DEFAULT_DATA.users.find(u => u.id === id);
 }
 
 export function updateUser(id, updates) {
   updateDoc(doc(db, 'users', id), updates);
-  // ローカルステートはonSnapshotで更新されるが、楽観的UI更新としてここでも変更しておく
   const user = localState.users.find(u => u.id === id);
   if (user) Object.assign(user, updates);
   return user;
 }
 
 export function getStudents() {
-  return getData().users.filter(u => u.role === 'student');
+  const students = getData().users.filter(u => u.role === 'student');
+  // まだFirestoreからデータが来ていない場合はデフォルトを返す
+  if (students.length === 0) {
+    return DEFAULT_DATA.users.filter(u => u.role === 'student');
+  }
+  return students;
 }
 
 // ========================================
@@ -155,11 +194,17 @@ export function getWeeklyPlan(studentId, weekStart) {
 export function saveWeeklyPlan(plan) {
   const existing = getWeeklyPlan(plan.studentId, plan.weekStart);
   if (existing) {
-    updateDoc(doc(db, 'weeklyPlans', existing.id), plan);
-    return { ...existing, ...plan };
+    const merged = { ...existing, ...plan };
+    setDoc(doc(db, 'weeklyPlans', existing.id), merged);
+    // 楽観的UI更新
+    const idx = localState.weeklyPlans.findIndex(p => p.id === existing.id);
+    if (idx >= 0) localState.weeklyPlans[idx] = merged;
+    return merged;
   } else {
     plan.id = plan.id || generateId();
     setDoc(doc(db, 'weeklyPlans', plan.id), plan);
+    // 楽観的UI更新
+    localState.weeklyPlans.push(plan);
     return plan;
   }
 }
@@ -187,17 +232,27 @@ export function addAssignment(assignment) {
   assignment.status = assignment.status || 'pending';
   assignment.createdAt = assignment.createdAt || new Date().toISOString();
   setDoc(doc(db, 'assignments', assignment.id), assignment);
+  // 楽観的UI更新
+  localState.assignments.push(assignment);
+  emitDataChange('assignments', { action: 'add' });
   return assignment;
 }
 
 export function updateAssignment(id, updates) {
   updates.updatedAt = new Date().toISOString();
   updateDoc(doc(db, 'assignments', id), updates);
+  // 楽観的UI更新
+  const idx = localState.assignments.findIndex(a => a.id === id);
+  if (idx >= 0) Object.assign(localState.assignments[idx], updates);
+  emitDataChange('assignments', { action: 'update' });
   return { id, ...updates };
 }
 
 export function deleteAssignment(id) {
   deleteDoc(doc(db, 'assignments', id));
+  // 楽観的UI更新
+  localState.assignments = localState.assignments.filter(a => a.id !== id);
+  emitDataChange('assignments', { action: 'delete' });
   return true;
 }
 
@@ -215,16 +270,26 @@ export function addTestResult(result) {
   result.id = result.id || generateId();
   result.createdAt = result.createdAt || new Date().toISOString();
   setDoc(doc(db, 'testResults', result.id), result);
+  // 楽観的UI更新
+  localState.testResults.push(result);
+  emitDataChange('testResults', { action: 'add' });
   return result;
 }
 
 export function updateTestResult(id, updates) {
   updateDoc(doc(db, 'testResults', id), updates);
+  // 楽観的UI更新
+  const idx = localState.testResults.findIndex(r => r.id === id);
+  if (idx >= 0) Object.assign(localState.testResults[idx], updates);
+  emitDataChange('testResults', { action: 'update' });
   return { id, ...updates };
 }
 
 export function deleteTestResult(id) {
   deleteDoc(doc(db, 'testResults', id));
+  // 楽観的UI更新
+  localState.testResults = localState.testResults.filter(r => r.id !== id);
+  emitDataChange('testResults', { action: 'delete' });
   return true;
 }
 
@@ -247,6 +312,9 @@ export function addStudyLog(log) {
   log.id = log.id || generateId();
   log.createdAt = log.createdAt || new Date().toISOString();
   setDoc(doc(db, 'studyLogs', log.id), log);
+  // 楽観的UI更新
+  localState.studyLogs.push(log);
+  emitDataChange('studyLogs', { action: 'add' });
   return log;
 }
 
@@ -318,12 +386,19 @@ export function addQuestion(question) {
   question.status = question.status || 'open';
   question.createdAt = question.createdAt || new Date().toISOString();
   setDoc(doc(db, 'questions', question.id), question);
+  // 楽観的UI更新
+  localState.questions.push(question);
+  emitDataChange('questions', { action: 'add' });
   return question;
 }
 
 export function updateQuestion(id, updates) {
   updates.updatedAt = new Date().toISOString();
   updateDoc(doc(db, 'questions', id), updates);
+  // 楽観的UI更新
+  const idx = localState.questions.findIndex(q => q.id === id);
+  if (idx >= 0) Object.assign(localState.questions[idx], updates);
+  emitDataChange('questions', { action: 'update' });
   return { id, ...updates };
 }
 
@@ -336,8 +411,13 @@ export function getSettings() {
 }
 
 export function updateSettings(updates) {
-  updateDoc(doc(db, 'settings', 'global'), updates);
-  return { ...localState.settings, ...updates };
+  // setDoc with merge-like behavior
+  const merged = { ...localState.settings, ...updates };
+  setDoc(doc(db, 'settings', 'global'), merged);
+  // 楽観的UI更新
+  localState.settings = merged;
+  emitDataChange('settings', { action: 'update' });
+  return merged;
 }
 
 // ========================================
