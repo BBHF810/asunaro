@@ -1,5 +1,4 @@
-import { storage } from '../firebase.js';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+
 import { getCurrentUser, isTeacher, isStudent } from '../auth.js';
 import { getQuestions, addQuestion, updateQuestion, getStudents, getSettings, generateId } from '../store.js';
 import { updatePageTitle, showToast, showModal, closeModal } from '../app.js';
@@ -255,8 +254,8 @@ function showQuestionForm(container, settings) {
       showToast('画像ファイルを選択してください', 'warning');
       return;
     }
-    if (file.size > 5 * 1024 * 1024) {
-      showToast('画像は5MB以下にしてください', 'warning');
+    if (file.size > 500 * 1024) {
+      showToast('画像は500KB以下にしてください（データ節約のため）', 'warning');
       return;
     }
     imageFile = file;
@@ -285,9 +284,11 @@ function showQuestionForm(container, settings) {
     let imageUrl = null;
     try {
       if (imageFile) {
-        const fileRef = ref(storage, `questions/${generateId()}_${imageFile.name}`);
-        await uploadBytes(fileRef, imageFile);
-        imageUrl = await getDownloadURL(fileRef);
+        imageUrl = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = (e) => resolve(e.target.result);
+          reader.readAsDataURL(imageFile);
+        });
       }
 
       addQuestion({
