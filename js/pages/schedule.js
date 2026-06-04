@@ -8,6 +8,7 @@ const ROW_TYPES = ['予習', '授業'];
 
 let currentWeekStart = null;
 let selectedStudentId = null;
+let initialized = false;
 
 export function renderSchedule(container) {
   updatePageTitle('週間予定表');
@@ -16,9 +17,17 @@ export function renderSchedule(container) {
   const settings = getSettings();
   const subjects = settings.subjects;
 
-  // URLパラメータからstudentIdを取得
-  const params = new URLSearchParams(location.hash.split('?')[1] || '');
-  selectedStudentId = params.get('student') || (isStudent() ? user.id : students[0]?.id);
+  // URLパラメータからstudentIdを取得（初回表示 or パラメータ指定時のみ）
+  if (!initialized || !selectedStudentId) {
+    const params = new URLSearchParams(location.hash.split('?')[1] || '');
+    const paramStudent = params.get('student');
+    if (paramStudent) {
+      selectedStudentId = paramStudent;
+    } else if (!selectedStudentId) {
+      selectedStudentId = isStudent() ? user.id : students[0]?.id;
+    }
+    initialized = true;
+  }
   currentWeekStart = currentWeekStart || getWeekStart(new Date());
 
   const plan = getWeeklyPlan(selectedStudentId, currentWeekStart) || createEmptyPlan(selectedStudentId, currentWeekStart, subjects);

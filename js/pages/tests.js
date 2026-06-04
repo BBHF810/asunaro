@@ -4,6 +4,7 @@ import { getTestResults, addTestResult, updateTestResult, deleteTestResult, getS
 import { updatePageTitle, showToast, showModal, closeModal } from '../app.js';
 
 let selectedStudentId = null;
+let initialized = false;
 
 export function renderTests(container) {
   updatePageTitle('テスト結果');
@@ -11,8 +12,16 @@ export function renderTests(container) {
   const students = getStudents();
   const settings = getSettings();
 
-  const params = new URLSearchParams(location.hash.split('?')[1] || '');
-  selectedStudentId = params.get('student') || (isStudent() ? user.id : students[0]?.id);
+  if (!initialized || !selectedStudentId) {
+    const params = new URLSearchParams(location.hash.split('?')[1] || '');
+    const paramStudent = params.get('student');
+    if (paramStudent) {
+      selectedStudentId = paramStudent;
+    } else if (!selectedStudentId) {
+      selectedStudentId = isStudent() ? user.id : students[0]?.id;
+    }
+    initialized = true;
+  }
 
   const results = getTestResults(selectedStudentId).sort((a, b) => (b.date || '').localeCompare(a.date || ''));
   const selectedStudent = students.find(s => s.id === selectedStudentId) || user;

@@ -4,6 +4,7 @@ import { getStudyLogs, getTestResults, getStudyStats, getAssignments, getStudent
 import { updatePageTitle } from '../app.js';
 
 let selectedStudentId = null;
+let initialized = false;
 
 export function renderStats(container) {
   updatePageTitle('学習統計');
@@ -11,8 +12,16 @@ export function renderStats(container) {
   const students = getStudents();
   const settings = getSettings();
 
-  const params = new URLSearchParams(location.hash.split('?')[1] || '');
-  selectedStudentId = params.get('student') || (isStudent() ? user.id : students[0]?.id);
+  if (!initialized || !selectedStudentId) {
+    const params = new URLSearchParams(location.hash.split('?')[1] || '');
+    const paramStudent = params.get('student');
+    if (paramStudent) {
+      selectedStudentId = paramStudent;
+    } else if (!selectedStudentId) {
+      selectedStudentId = isStudent() ? user.id : students[0]?.id;
+    }
+    initialized = true;
+  }
 
   const stats = getStudyStats(selectedStudentId);
   const assignments = getAssignments(selectedStudentId);

@@ -221,7 +221,7 @@ export function getAssignments(studentId, filters = {}) {
 
   if (filters.status) assignments = assignments.filter(a => a.status === filters.status);
   if (filters.subject) assignments = assignments.filter(a => a.subject === filters.subject);
-  if (filters.dueDate) assignments = assignments.filter(a => a.dueDate === filters.dueDate);
+  if (filters.scheduledDate) assignments = assignments.filter(a => a.scheduledDate === filters.scheduledDate);
 
   return assignments;
 }
