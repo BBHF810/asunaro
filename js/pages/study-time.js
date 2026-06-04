@@ -361,21 +361,26 @@ function showStudyLogForm(container, settings, existing) {
     </form>
   `;
 
-  showModal('勉強記録の編集', formHtml);
+  showModal(formHtml, { title: '勉強記録の編集' });
 
-  document.getElementById('study-log-form').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const updates = {
-      subject: formData.get('subject'),
-      duration: parseInt(formData.get('duration')),
-    };
-    
-    updateStudyLog(existing.id, updates);
-    closeModal();
-    showToast('記録を更新しました', 'success');
-    renderStudyTime(container);
-  });
+  // DOMにレンダリングされるのを待つため、ここではボタンからイベントリスナーを登録するのではなく、
+  // modal内のformに対してsubmitイベントを登録する
+  const form = document.getElementById('study-log-form');
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const updates = {
+        subject: formData.get('subject'),
+        duration: parseInt(formData.get('duration')),
+      };
+      
+      updateStudyLog(existing.id, updates);
+      closeModal();
+      showToast('記録を更新しました', 'success');
+      renderStudyTime(container);
+    });
+  }
 }
 
 function formatTime(totalSeconds) {
