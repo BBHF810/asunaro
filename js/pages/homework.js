@@ -166,28 +166,28 @@ function showHomeworkForm(container, settings, existing) {
   const formHtml = `
     <form id="homework-form">
       <div class="input-group">
-        <label>教科</label>
-        <select class="select" name="subject" required>
+        <label for="hw-subject">教科</label>
+        <select class="select" name="subject" id="hw-subject" required>
           ${settings.subjects.map(s => `
             <option value="${s}" ${existing?.subject === s ? 'selected' : ''}>${s}</option>
           `).join('')}
         </select>
       </div>
       <div class="input-group">
-        <label>内容</label>
-        <input class="input" name="content" value="${existing?.content || ''}" placeholder="宿題の内容を入力" required />
+        <label for="hw-content">内容</label>
+        <input class="input" name="content" id="hw-content" value="${existing?.content || ''}" placeholder="宿題の内容を入力" required />
       </div>
       <div class="input-group">
-        <label>ページ・範囲</label>
-        <input class="input" name="pages" value="${existing?.pages || ''}" placeholder="例: p.42-45" />
+        <label for="hw-pages">ページ・範囲</label>
+        <input class="input" name="pages" id="hw-pages" value="${existing?.pages || ''}" placeholder="例: p.42-45" />
       </div>
       <div class="input-group">
-        <label>期限</label>
-        <input class="input" type="date" name="dueDate" value="${existing?.dueDate || ''}" />
+        <label for="hw-dueDate">期限</label>
+        <input class="input" type="date" name="dueDate" id="hw-dueDate" value="${existing?.dueDate || ''}" />
       </div>
       <div class="input-group">
-        <label>メモ</label>
-        <textarea class="textarea" name="notes" placeholder="メモを入力...">${existing?.notes || ''}</textarea>
+        <label for="hw-notes">メモ</label>
+        <textarea class="textarea" name="notes" id="hw-notes" placeholder="メモを入力...">${existing?.notes || ''}</textarea>
       </div>
     </form>
   `;
