@@ -49,7 +49,7 @@ function renderTeacherDashboard(container, user) {
             <span class="stat-value-sm">${completed}/${total}</span>
           </div>
           <div class="progress-bar">
-            <div class="progress-fill" style="width: ${percentage}%; background: var(--accent-gradient)"></div>
+            <div class="fill" style="width: ${percentage}%; background: var(--accent-gradient)"></div>
           </div>
           ${recentTests.length > 0 ? `
             <div class="stat-row" style="margin-top: var(--space-3)">
@@ -234,7 +234,7 @@ function renderParentDashboard(container, user) {
             </div>
           </div>
           <div class="progress-bar" style="margin-top: var(--space-3)">
-            <div class="progress-fill" style="width: ${percentage}%; background: var(--accent-gradient)"></div>
+            <div class="fill" style="width: ${percentage}%; background: var(--accent-gradient)"></div>
           </div>
           ${recentTests.length > 0 ? `
             <div style="margin-top: var(--space-4)">

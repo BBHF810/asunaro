@@ -156,7 +156,7 @@ export function renderStudyTime(container) {
                 <div class="subject-bar-row">
                   <span class="subject-bar-label" style="color: ${settings.subjectColors[sub]}">${sub}</span>
                   <div class="progress-bar" style="flex: 1">
-                    <div class="progress-fill" style="width: ${pct}%; background: ${settings.subjectColors[sub]}"></div>
+                    <div class="fill" style="width: ${pct}%; background: ${settings.subjectColors[sub]}"></div>
                   </div>
                   <span class="subject-bar-value">${mins}分</span>
                 </div>
