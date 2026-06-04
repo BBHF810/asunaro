@@ -28,8 +28,11 @@ export function renderStudyTime(container) {
   }
 
   const stats = getStudyStats(selectedStudentId);
-  const today = formatDate(new Date());
-  const todayLogs = getStudyLogs(selectedStudentId, { from: today, to: today });
+  const allLogs = getStudyLogs(selectedStudentId).sort((a, b) => {
+    // 日付が新しい順、同じ場合はid順など
+    if (a.date !== b.date) return (b.date || '').localeCompare(a.date || '');
+    return (b.createdAt || '').localeCompare(a.createdAt || '');
+  });
   const selectedStudent = students.find(s => s.id === selectedStudentId) || user;
 
   // 今週のログ
@@ -168,14 +171,15 @@ export function renderStudyTime(container) {
 
       <div class="today-logs card animate-slideUp">
         <div class="card-header">
-          <h3 class="card-title">📝 今日の記録</h3>
+          <h3 class="card-title">📝 すべての記録</h3>
         </div>
         <div class="card-body">
-          ${todayLogs.length > 0 ? `
-            <div class="study-log-list">
-              ${todayLogs.map(log => `
+          ${allLogs.length > 0 ? `
+            <div class="study-log-list" style="max-height: 400px; overflow-y: auto;">
+              ${allLogs.map(log => `
                 <div class="study-log-item" style="display: flex; align-items: center; justify-content: space-between;">
                   <div>
+                    <span class="text-sm text-muted" style="margin-right: 8px;">${log.date || ''}</span>
                     <span class="badge badge-sm" style="background: ${settings.subjectColors[log.subject]}20; color: ${settings.subjectColors[log.subject]}">${log.subject}</span>
                     <span class="study-log-duration" style="margin: 0 10px;">${log.duration}分</span>
                     <span class="text-muted text-sm">${log.method === 'timer' ? 'タイマー' : '手動'}</span>
@@ -189,7 +193,7 @@ export function renderStudyTime(container) {
             </div>
           ` : `
             <div class="empty-state" style="padding: var(--space-4)">
-              <p class="text-muted">今日の記録はまだありません</p>
+              <p class="text-muted">記録はまだありません</p>
             </div>
           `}
         </div>
@@ -317,8 +321,7 @@ function setupStudyTimeEvents(container, settings) {
   // 編集ボタン
   container.querySelectorAll('.edit-log-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      const today = formatDate(new Date());
-      const logs = getStudyLogs(selectedStudentId, { from: today, to: today });
+      const logs = getStudyLogs(selectedStudentId);
       const log = logs.find(l => l.id === btn.dataset.id);
       if (log) showStudyLogForm(container, settings, log);
     });
