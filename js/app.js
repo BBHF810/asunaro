@@ -1,5 +1,5 @@
 // あすなろ - メインアプリケーション
-import { initStore } from './store.js';
+import { initStore, storeReadyPromise } from './store.js';
 import { initRouter, addRoute, navigate } from './router.js';
 import { restoreSession, isLoggedIn, getCurrentUser, logout } from './auth.js';
 import { renderLogin } from './pages/login.js';
@@ -13,11 +13,15 @@ import { renderSettings } from './pages/settings.js';
 import { renderSidebar } from './components/sidebar.js';
 
 // アプリ初期化
-function initApp() {
+async function initApp() {
   initStore();
   restoreSession();
   registerRoutes();
   renderAppShell();
+  
+  // データがロードされるのを待つ
+  await storeReadyPromise;
+  
   initRouter();
 }
 
