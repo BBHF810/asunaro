@@ -1,10 +1,9 @@
 // 週間予定表ページ
 import { getCurrentUser, isTeacher, isStudent } from '../auth.js';
-import { getWeeklyPlan, saveWeeklyPlan, getStudents, getSettings, getWeekStart, formatDate } from '../store.js';
+import { getWeeklyPlan, saveWeeklyPlan, getStudents, getSettings, getWeekStart, formatDate, getAssignments, addAssignment, updateAssignment, deleteAssignment } from '../store.js';
 import { updatePageTitle, showToast } from '../app.js';
 
 const DAYS = ['月', '火', '水', '木', '金', '土'];
-const ROW_TYPES = ['予習', '授業'];
 
 let currentWeekStart = null;
 let selectedStudentId = null;
@@ -31,8 +30,17 @@ export function renderSchedule(container) {
   currentWeekStart = currentWeekStart || getWeekStart(new Date());
 
   const plan = getWeeklyPlan(selectedStudentId, currentWeekStart) || createEmptyPlan(selectedStudentId, currentWeekStart, subjects);
+  const assignments = getAssignments(selectedStudentId);
   const canEdit = isTeacher() || (isStudent() && user.id === selectedStudentId);
   const selectedStudent = students.find(s => s.id === selectedStudentId) || user;
+
+  // 週の日付を計算
+  const weekStartDate = new Date(currentWeekStart);
+  const weekDates = DAYS.map((_, i) => {
+    const d = new Date(weekStartDate);
+    d.setDate(d.getDate() + i);
+    return formatDate(d);
+  });
 
   container.innerHTML = `
     <div class="schedule-page">
@@ -118,38 +126,44 @@ export function renderSchedule(container) {
               </tr>
             </thead>
             <tbody>
-              ${DAYS.map((day, dayIdx) => `
-                ${ROW_TYPES.map((type, typeIdx) => `
-                  <tr class="${typeIdx === 0 ? 'row-first' : 'row-second'}">
-                    ${typeIdx === 0 ? `<td class="day-label" rowspan="2">${day}</td>` : ''}
-                    <td class="type-label type-${type === '予習' ? 'preview' : 'lesson'}">${type}</td>
+              ${DAYS.map((day, dayIdx) => {
+                const currentDate = weekDates[dayIdx];
+                return `
+                  <tr class="row-single">
+                    <td class="day-label">${day}</td>
+                    <td class="type-label type-preview" style="font-size: 0.7rem;">宿題</td>
                     ${subjects.map(subject => {
-                      const cellKey = `${dayIdx}-${typeIdx}-${subject}`;
-                      const cell = plan.cells?.find(c => c.key === cellKey);
+                      const cellKey = `${dayIdx}-${subject}`;
+                      // その日・その教科の宿題を探す（複数ある場合は最初の1つを表示）
+                      const assignment = assignments.find(a => a.scheduledDate === currentDate && a.subject === subject);
+                      const content = assignment ? assignment.content : '';
+                      const isCompleted = assignment ? (assignment.status === 'completed') : false;
+                      const assignmentId = assignment ? assignment.id : '';
+
                       return `
-                        <td class="cell ${cell?.completed ? 'completed' : ''}"
-                            data-key="${cellKey}" data-day="${dayIdx}" data-type="${typeIdx}" data-subject="${subject}">
+                        <td class="cell ${isCompleted ? 'completed' : ''}"
+                            data-key="${cellKey}" data-date="${currentDate}" data-subject="${subject}" data-assignment-id="${assignmentId}">
                           ${canEdit ? `
                             <div class="cell-wrapper">
-                              <input class="cell-input" value="${cell?.content || ''}"
+                              <input class="cell-input" value="${content}" name="cell-${cellKey}" aria-label="${day} ${subject} 宿題"
                                      placeholder="·" data-cell-key="${cellKey}" />
-                              <button class="cell-check ${cell?.completed ? 'checked' : ''}"
+                              <button class="cell-check ${isCompleted ? 'checked' : ''}"
                                       data-cell-key="${cellKey}" aria-label="完了">
-                                ${cell?.completed ? '✓' : ''}
+                                ${isCompleted ? '✓' : ''}
                               </button>
                             </div>
                           ` : `
                             <div class="cell-wrapper readonly">
-                              <span class="cell-text">${cell?.content || ''}</span>
-                              ${cell?.completed ? '<span class="cell-check checked">✓</span>' : ''}
+                              <span class="cell-text">${content}</span>
+                              ${isCompleted ? '<span class="cell-check checked">✓</span>' : ''}
                             </div>
                           `}
                         </td>
                       `;
                     }).join('')}
                   </tr>
-                `).join('')}
-              `).join('')}
+                `;
+              }).join('')}
             </tbody>
           </table>
         </div>
@@ -242,37 +256,64 @@ function setupScheduleEvents(container, plan, subjects) {
 
   // 保存ボタン
   document.getElementById('save-schedule')?.addEventListener('click', () => {
-    // セルの値を収集
-    const cells = [];
-    container.querySelectorAll('.cell-input').forEach(input => {
-      const key = input.dataset.cellKey;
-      const td = input.closest('td');
-      const checkBtn = td.querySelector('.cell-check');
-      cells.push({
-        key,
-        content: input.value,
-        completed: checkBtn?.classList.contains('checked') || false,
-      });
-    });
-
-    // 目標を収集
+    // 目標・コメントの収集
     const goals = {};
     container.querySelectorAll('.goal-input').forEach(input => {
-      goals[input.dataset.subject] = input.value;
+      if (input.value.trim()) goals[input.dataset.subject] = input.value.trim();
+    });
+    
+    const teacherComment = document.getElementById('teacher-comment')?.value || '';
+    const reflection = document.getElementById('reflection')?.value || plan.reflection || '';
+
+    // セル（宿題）の収集と保存
+    container.querySelectorAll('.cell').forEach(td => {
+      const input = td.querySelector('.cell-input');
+      if (!input) return; // read-only mode
+
+      const content = input.value.trim();
+      const checkBtn = td.querySelector('.cell-check');
+      const isCompleted = checkBtn ? checkBtn.classList.contains('checked') : false;
+      const status = isCompleted ? 'completed' : 'pending';
+      
+      const assignmentId = td.dataset.assignmentId;
+      const date = td.dataset.date;
+      const subject = td.dataset.subject;
+
+      if (content) {
+        if (assignmentId) {
+          // 既存を更新
+          updateAssignment(assignmentId, { content, status });
+        } else {
+          // 新規作成
+          const newAssignment = addAssignment({
+            studentId: selectedStudentId,
+            subject: subject,
+            content: content,
+            status: status,
+            scheduledDate: date
+          });
+          td.dataset.assignmentId = newAssignment.id; // 即座にIDを反映
+        }
+      } else {
+        if (assignmentId) {
+          // 内容が空になった場合は削除
+          deleteAssignment(assignmentId);
+          td.dataset.assignmentId = '';
+        }
+      }
     });
 
-    const updatedPlan = {
+    saveWeeklyPlan({
       ...plan,
       studentId: selectedStudentId,
       weekStart: currentWeekStart,
       goals,
-      cells,
-      teacherComment: document.getElementById('teacher-comment')?.value || plan.teacherComment,
-      reflection: document.getElementById('reflection')?.value || plan.reflection,
-    };
+      teacherComment,
+      reflection,
+      cells: [] // cellsはもう使わないが互換性のため空配列を入れる
+    });
 
-    saveWeeklyPlan(updatedPlan);
-    showToast('予定表を保存しました！', 'success');
+    showToast('予定と宿題を保存しました', 'success');
   });
 }
 
