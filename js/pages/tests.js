@@ -26,16 +26,6 @@ export function renderTests(container) {
   const results = getTestResults(selectedStudentId).sort((a, b) => (b.date || '').localeCompare(a.date || ''));
   const selectedStudent = students.find(s => s.id === selectedStudentId) || user;
 
-  // 教科別平均スコア
-  const subjectAvg = {};
-  settings.subjects.forEach(sub => {
-    const subResults = results.filter(r => r.subject === sub);
-    if (subResults.length > 0) {
-      const avg = subResults.reduce((sum, r) => sum + (r.score / r.maxScore) * 100, 0) / subResults.length;
-      subjectAvg[sub] = Math.round(avg);
-    }
-  });
-
   container.innerHTML = `
     <div class="tests-page">
       ${!isStudent() ? `
@@ -46,24 +36,6 @@ export function renderTests(container) {
               ${s.avatar} ${s.name}
             </button>
           `).join('')}
-        </div>
-      ` : ''}
-
-      ${Object.keys(subjectAvg).length > 0 ? `
-        <div class="test-summary animate-slideUp">
-          <h3 class="section-title">教科別平均点</h3>
-          <div class="subject-avg-grid">
-            ${settings.subjects.map(sub => {
-              const avg = subjectAvg[sub];
-              if (avg === undefined) return '';
-              return `
-                <div class="subject-avg-card" style="border-top: 3px solid ${settings.subjectColors[sub]}">
-                  <span class="subject-avg-label">${sub}</span>
-                  <span class="subject-avg-value ${avg >= 80 ? 'score-good' : avg >= 60 ? 'score-ok' : 'score-low'}">${avg}%</span>
-                </div>
-              `;
-            }).join('')}
-          </div>
         </div>
       ` : ''}
 
