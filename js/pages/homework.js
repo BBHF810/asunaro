@@ -97,7 +97,7 @@ export function renderHomework(container) {
               ${isTeacher() || isStudent() ? `
                 <button class="btn btn-sm btn-ghost edit-btn" data-id="${a.id}">編集</button>
               ` : ''}
-              ${isTeacher() ? `
+              ${isTeacher() || isStudent() ? `
                 <button class="btn btn-sm btn-ghost delete-btn" data-id="${a.id}" style="color: var(--status-danger)">削除</button>
               ` : ''}
             </div>

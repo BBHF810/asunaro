@@ -1,7 +1,7 @@
 // 勉強時間ページ
 import { getCurrentUser, isStudent } from '../auth.js';
-import { addStudyLog, getStudyLogs, getStudyStats, getStudents, getSettings, formatDate } from '../store.js';
-import { updatePageTitle, showToast } from '../app.js';
+import { addStudyLog, getStudyLogs, getStudyStats, getStudents, getSettings, formatDate, updateStudyLog, deleteStudyLog } from '../store.js';
+import { updatePageTitle, showToast, showModal, closeModal } from '../app.js';
 
 let timerInterval = null;
 let timerSeconds = 0;
@@ -174,10 +174,16 @@ export function renderStudyTime(container) {
           ${todayLogs.length > 0 ? `
             <div class="study-log-list">
               ${todayLogs.map(log => `
-                <div class="study-log-item">
-                  <span class="badge badge-sm" style="background: ${settings.subjectColors[log.subject]}20; color: ${settings.subjectColors[log.subject]}">${log.subject}</span>
-                  <span class="study-log-duration">${log.duration}分</span>
-                  <span class="text-muted text-sm">${log.method === 'timer' ? 'タイマー' : '手動'}</span>
+                <div class="study-log-item" style="display: flex; align-items: center; justify-content: space-between;">
+                  <div>
+                    <span class="badge badge-sm" style="background: ${settings.subjectColors[log.subject]}20; color: ${settings.subjectColors[log.subject]}">${log.subject}</span>
+                    <span class="study-log-duration" style="margin: 0 10px;">${log.duration}分</span>
+                    <span class="text-muted text-sm">${log.method === 'timer' ? 'タイマー' : '手動'}</span>
+                  </div>
+                  <div>
+                    <button class="btn btn-sm btn-ghost edit-log-btn" data-id="${log.id}">編集</button>
+                    <button class="btn btn-sm btn-ghost delete-log-btn" data-id="${log.id}" style="color: var(--status-danger)">削除</button>
+                  </div>
                 </div>
               `).join('')}
             </div>
@@ -305,6 +311,66 @@ function setupStudyTimeEvents(container, settings) {
       method: 'manual',
     });
     showToast(`${subject} ${duration}分を記録しました！`, 'success');
+    renderStudyTime(container);
+  });
+
+  // 編集ボタン
+  container.querySelectorAll('.edit-log-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const today = formatDate(new Date());
+      const logs = getStudyLogs(selectedStudentId, { from: today, to: today });
+      const log = logs.find(l => l.id === btn.dataset.id);
+      if (log) showStudyLogForm(container, settings, log);
+    });
+  });
+
+  // 削除ボタン
+  container.querySelectorAll('.delete-log-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (confirm('この記録を削除しますか？')) {
+        deleteStudyLog(btn.dataset.id);
+        showToast('記録を削除しました', 'info');
+        renderStudyTime(container);
+      }
+    });
+  });
+}
+
+function showStudyLogForm(container, settings, existing) {
+  const formHtml = `
+    <form id="study-log-form">
+      <div class="input-group">
+        <label for="log-subject">教科</label>
+        <select class="select" name="subject" id="log-subject" required>
+          ${settings.subjects.map(s => `
+            <option value="${s}" ${existing.subject === s ? 'selected' : ''}>${s}</option>
+          `).join('')}
+        </select>
+      </div>
+      <div class="input-group">
+        <label for="log-duration">勉強時間 (分)</label>
+        <input class="input" type="number" name="duration" id="log-duration" value="${existing.duration}" min="1" required />
+      </div>
+      <div style="display: flex; gap: var(--space-2); justify-content: flex-end; margin-top: var(--space-4);">
+        <button type="button" class="btn btn-secondary" onclick="document.getElementById('modal-close').click()">キャンセル</button>
+        <button type="submit" class="btn btn-primary">保存する</button>
+      </div>
+    </form>
+  `;
+
+  showModal('勉強記録の編集', formHtml);
+
+  document.getElementById('study-log-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const updates = {
+      subject: formData.get('subject'),
+      duration: parseInt(formData.get('duration')),
+    };
+    
+    updateStudyLog(existing.id, updates);
+    closeModal();
+    showToast('記録を更新しました', 'success');
     renderStudyTime(container);
   });
 }

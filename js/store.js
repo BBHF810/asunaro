@@ -317,6 +317,23 @@ export function addStudyLog(log) {
   return log;
 }
 
+export function updateStudyLog(id, updates) {
+  updateDoc(doc(db, 'studyLogs', id), updates);
+  // 楽観的UI更新
+  const idx = localState.studyLogs.findIndex(l => l.id === id);
+  if (idx >= 0) Object.assign(localState.studyLogs[idx], updates);
+  emitDataChange('studyLogs', { action: 'update' });
+  return { id, ...updates };
+}
+
+export function deleteStudyLog(id) {
+  deleteDoc(doc(db, 'studyLogs', id));
+  // 楽観的UI更新
+  localState.studyLogs = localState.studyLogs.filter(l => l.id !== id);
+  emitDataChange('studyLogs', { action: 'delete' });
+  return true;
+}
+
 export function getStudyStats(studentId) {
   const logs = getStudyLogs(studentId);
   const totalMinutes = logs.reduce((sum, l) => sum + (l.duration || 0), 0);
