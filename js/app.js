@@ -195,6 +195,11 @@ export function showModal(content, options = {}) {
 
   container.appendChild(modal);
 
+  // activeクラスを追加してCSSのvisibility:hiddenを解除（次フレームで追加してトランジションを有効化）
+  requestAnimationFrame(() => {
+    modal.classList.add('active');
+  });
+
   // 閉じるボタン
   modal.querySelector('.modal-close')?.addEventListener('click', () => closeModal());
   modal.addEventListener('click', (e) => {
@@ -208,7 +213,7 @@ export function closeModal() {
   const container = document.getElementById('modal-container');
   const overlay = container?.querySelector('.modal-overlay');
   if (overlay) {
-    overlay.classList.add('modal-exit');
+    overlay.classList.remove('active');
     setTimeout(() => overlay.remove(), 300);
   }
 }
