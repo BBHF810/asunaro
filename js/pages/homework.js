@@ -6,6 +6,7 @@ import { updatePageTitle, showToast, showModal, closeModal } from '../app.js';
 let filterStatus = 'all';
 let filterSubject = 'all';
 let selectedStudentId = null;
+let initialized = false;
 
 export function renderHomework(container) {
   updatePageTitle('宿題管理');
@@ -13,17 +14,26 @@ export function renderHomework(container) {
   const students = getStudents();
   const settings = getSettings();
 
-  const params = new URLSearchParams(location.hash.split('?')[1] || '');
-  selectedStudentId = params.get('student') || (isStudent() ? user.id : students[0]?.id);
+  // 初回表示 or URL paramsからの遷移時のみ selectedStudentId を設定
+  if (!initialized || !selectedStudentId) {
+    const params = new URLSearchParams(location.hash.split('?')[1] || '');
+    const paramStudent = params.get('student');
+    if (paramStudent) {
+      selectedStudentId = paramStudent;
+    } else if (!selectedStudentId) {
+      selectedStudentId = isStudent() ? user.id : students[0]?.id;
+    }
+    initialized = true;
+  }
 
   const assignments = getAssignments(selectedStudentId)
     .filter(a => filterStatus === 'all' || a.status === filterStatus)
     .filter(a => filterSubject === 'all' || a.subject === filterSubject)
     .sort((a, b) => {
-      // 未完了を先に、期限順
+      // 未完了を先に、予定日順
       if (a.status === 'completed' && b.status !== 'completed') return 1;
       if (a.status !== 'completed' && b.status === 'completed') return -1;
-      return (a.dueDate || '9999') > (b.dueDate || '9999') ? 1 : -1;
+      return (a.scheduledDate || a.dueDate || '9999') > (b.scheduledDate || b.dueDate || '9999') ? 1 : -1;
     });
 
   const selectedStudent = students.find(s => s.id === selectedStudentId) || user;
@@ -43,13 +53,13 @@ export function renderHomework(container) {
 
       <div class="homework-toolbar animate-fadeIn">
         <div class="homework-filters">
-          <select class="select select-sm" id="filter-status">
+          <select class="select select-sm" id="filter-status" aria-label="ステータスフィルター">
             <option value="all" ${filterStatus === 'all' ? 'selected' : ''}>すべて</option>
             <option value="pending" ${filterStatus === 'pending' ? 'selected' : ''}>未着手</option>
             <option value="in_progress" ${filterStatus === 'in_progress' ? 'selected' : ''}>進行中</option>
             <option value="completed" ${filterStatus === 'completed' ? 'selected' : ''}>完了</option>
           </select>
-          <select class="select select-sm" id="filter-subject">
+          <select class="select select-sm" id="filter-subject" aria-label="教科フィルター">
             <option value="all" ${filterSubject === 'all' ? 'selected' : ''}>全教科</option>
             ${settings.subjects.map(s => `
               <option value="${s}" ${filterSubject === s ? 'selected' : ''}>${s}</option>
@@ -78,7 +88,7 @@ export function renderHomework(container) {
               <h4 class="homework-content">${a.content}</h4>
               ${a.pages ? `<p class="homework-pages text-muted text-sm">📄 ${a.pages}</p>` : ''}
               ${a.notes ? `<p class="homework-notes text-muted text-sm">📝 ${a.notes}</p>` : ''}
-              ${a.dueDate ? `<p class="homework-due text-sm ${isDueSoon(a.dueDate) ? 'due-soon' : ''}">📅 ${formatDueDate(a.dueDate)}</p>` : ''}
+              ${a.scheduledDate ? `<p class="homework-due text-sm">📅 ${formatScheduledDate(a.scheduledDate)}</p>` : ''}
             </div>
             <div class="homework-item-actions">
               ${isStudent() && a.status !== 'completed' ? `
@@ -182,8 +192,8 @@ function showHomeworkForm(container, settings, existing) {
         <input class="input" name="pages" id="hw-pages" value="${existing?.pages || ''}" placeholder="例: p.42-45" />
       </div>
       <div class="input-group">
-        <label for="hw-dueDate">期限</label>
-        <input class="input" type="date" name="dueDate" id="hw-dueDate" value="${existing?.dueDate || ''}" />
+        <label for="hw-scheduledDate">予定日（いつやるか）</label>
+        <input class="input" type="date" name="scheduledDate" id="hw-scheduledDate" value="${existing?.scheduledDate || ''}" />
       </div>
       <div class="input-group">
         <label for="hw-notes">メモ</label>
@@ -208,7 +218,7 @@ function showHomeworkForm(container, settings, existing) {
       subject: formData.get('subject'),
       content: formData.get('content'),
       pages: formData.get('pages'),
-      dueDate: formData.get('dueDate'),
+      scheduledDate: formData.get('scheduledDate'),
       notes: formData.get('notes'),
     };
 
@@ -243,15 +253,9 @@ function getStatusLabel(status) {
   }
 }
 
-function isDueSoon(dateStr) {
-  const due = new Date(dateStr);
-  const now = new Date();
-  const diff = due - now;
-  return diff > 0 && diff < 86400000 * 2;
-}
-
-function formatDueDate(dateStr) {
+function formatScheduledDate(dateStr) {
   if (!dateStr) return '';
-  const due = new Date(dateStr);
-  return `${due.getFullYear()}/${due.getMonth() + 1}/${due.getDate()}`;
+  const d = new Date(dateStr);
+  const days = ['日', '月', '火', '水', '木', '金', '土'];
+  return `${d.getMonth() + 1}/${d.getDate()}（${days[d.getDay()]}）`;
 }

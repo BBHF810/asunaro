@@ -150,7 +150,7 @@ function renderStudentDashboard(container, user) {
                 <span class="todo-text">${a.content}</span>
                 ${a.pages ? `<span class="text-muted text-xs">${a.pages}</span>` : ''}
               </div>
-              ${a.dueDate ? `<span class="todo-due ${isDueSoon(a.dueDate) ? 'due-soon' : ''}">${formatDueDate(a.dueDate)}</span>` : ''}
+              ${a.scheduledDate ? `<span class="todo-due">${formatScheduledDate(a.scheduledDate)}</span>` : ''}
             </div>
           `).join('')}
           ${pendingAssignments.length > 5 ? `
@@ -270,19 +270,9 @@ function isToday(dateStr) {
   return dateStr.startsWith(today);
 }
 
-function isDueSoon(dateStr) {
-  const due = new Date(dateStr);
-  const now = new Date();
-  const diff = due - now;
-  return diff > 0 && diff < 86400000 * 2; // 2日以内
-}
-
-function formatDueDate(dateStr) {
-  const due = new Date(dateStr);
-  const now = new Date();
-  const diff = Math.ceil((due - now) / 86400000);
-  if (diff < 0) return '期限切れ';
-  if (diff === 0) return '今日まで';
-  if (diff === 1) return '明日まで';
-  return `${due.getMonth() + 1}/${due.getDate()}まで`;
+function formatScheduledDate(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  const days = ['日', '月', '火', '水', '木', '金', '土'];
+  return `${d.getMonth() + 1}/${d.getDate()}（${days[d.getDay()]}）`;
 }
