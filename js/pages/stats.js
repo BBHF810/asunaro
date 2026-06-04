@@ -159,24 +159,7 @@ export function renderStats(container) {
         </div>
         <div class="card-body">
           <div class="heatmap" id="heatmap">
-            <div class="heatmap-months">
-              ${getMonthLabels(90).map(m => `<span class="heatmap-month-label">${m}</span>`).join('')}
-            </div>
-            <div class="heatmap-grid">
-              ${heatmapData.map(day => {
-                const level = day.minutes === 0 ? 0 : day.minutes < 30 ? 1 : day.minutes < 60 ? 2 : day.minutes < 120 ? 3 : 4;
-                return `<div class="heatmap-cell heatmap-level-${level}" title="${day.date}: ${day.minutes}分"></div>`;
-              }).join('')}
-            </div>
-            <div class="heatmap-legend">
-              <span class="text-muted text-xs">少ない</span>
-              <div class="heatmap-cell heatmap-level-0"></div>
-              <div class="heatmap-cell heatmap-level-1"></div>
-              <div class="heatmap-cell heatmap-level-2"></div>
-              <div class="heatmap-cell heatmap-level-3"></div>
-              <div class="heatmap-cell heatmap-level-4"></div>
-              <span class="text-muted text-xs">多い</span>
-            </div>
+            ${renderHeatmap(heatmapData)}
           </div>
         </div>
       </div>
@@ -238,20 +221,76 @@ function getHeatmapData(studentId, days) {
   return data;
 }
 
-function getMonthLabels(days) {
-  const labels = [];
+function renderHeatmap(data) {
+  const DAY_LABELS = ['月', '火', '水', '木', '金', '土', '日'];
+  const CELL_SIZE = 17; // 14px cell + 3px gap
+
+  // データを週ごとにグループ化（月曜始まり）
+  // まず最初の日の曜日を計算してパディング
+  const firstDate = new Date(data[0].date);
+  let firstDayOfWeek = firstDate.getDay(); // 0=日, 1=月...
+  firstDayOfWeek = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1; // 月曜=0に変換
+
+  // パディング用の空セルを前に追加
+  const paddedData = [];
+  for (let i = 0; i < firstDayOfWeek; i++) {
+    paddedData.push(null);
+  }
+  data.forEach(d => paddedData.push(d));
+
+  // 週数計算
+  const totalWeeks = Math.ceil(paddedData.length / 7);
+
+  // 月ラベルの生成
+  const monthLabels = [];
   let lastMonth = -1;
-  for (let i = days - 1; i >= 0; i--) {
-    const date = new Date();
-    date.setDate(date.getDate() - i);
-    const month = date.getMonth();
-    if (month !== lastMonth) {
-      labels.push(`${month + 1}月`);
-      lastMonth = month;
+  for (let w = 0; w < totalWeeks; w++) {
+    const idx = w * 7 - firstDayOfWeek; // 元データのインデックス
+    if (idx >= 0 && idx < data.length) {
+      const d = new Date(data[idx].date);
+      const month = d.getMonth();
+      if (month !== lastMonth) {
+        monthLabels.push({ week: w, label: `${month + 1}月` });
+        lastMonth = month;
+      }
     }
   }
-  return labels;
+
+  // グリッドセル生成（grid-auto-flow: column で曜日が行、週が列になる）
+  const cells = paddedData.map(day => {
+    if (!day) return '<div class="heatmap-cell" style="visibility:hidden"></div>';
+    const level = day.minutes === 0 ? 0 : day.minutes < 30 ? 1 : day.minutes < 60 ? 2 : day.minutes < 120 ? 3 : 4;
+    return `<div class="heatmap-cell heatmap-level-${level}" title="${day.date}: ${day.minutes}分"></div>`;
+  }).join('');
+
+  return `
+    <div class="heatmap-months" style="padding-left: 32px;">
+      ${monthLabels.map((m, i) => {
+        const nextWeek = i < monthLabels.length - 1 ? monthLabels[i + 1].week : totalWeeks;
+        const span = nextWeek - m.week;
+        return `<span class="heatmap-month-label" style="width: ${span * CELL_SIZE}px">${m.label}</span>`;
+      }).join('')}
+    </div>
+    <div class="heatmap-grid-wrap">
+      <div class="heatmap-day-labels">
+        ${DAY_LABELS.map(d => `<div class="heatmap-day-label">${d}</div>`).join('')}
+      </div>
+      <div class="heatmap-grid">
+        ${cells}
+      </div>
+    </div>
+    <div class="heatmap-legend">
+      <span class="text-muted text-xs">少ない</span>
+      <div class="heatmap-cell heatmap-level-0"></div>
+      <div class="heatmap-cell heatmap-level-1"></div>
+      <div class="heatmap-cell heatmap-level-2"></div>
+      <div class="heatmap-cell heatmap-level-3"></div>
+      <div class="heatmap-cell heatmap-level-4"></div>
+      <span class="text-muted text-xs">多い</span>
+    </div>
+  `;
 }
+
 
 function renderRadarChart(studentId, settings) {
   const allLogs = getStudyLogs(studentId, {});
