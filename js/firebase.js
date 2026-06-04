@@ -1,7 +1,6 @@
 // Firebase 初期化と設定
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDUC3y0zTQzkgqZZc6NnXEjlWCLFGK0G44",
@@ -18,4 +17,3 @@ const app = initializeApp(firebaseConfig);
 
 // Export instances
 export const db = getFirestore(app);
-export const storage = getStorage(app);
