@@ -1,7 +1,7 @@
 // 宿題管理ページ
 import { getCurrentUser, isTeacher, isStudent } from '../auth.js';
 import { getAssignments, addAssignment, updateAssignment, deleteAssignment, getStudents, getSettings } from '../store.js';
-import { updatePageTitle, showToast, showModal, closeModal } from '../app.js';
+import { updatePageTitle, showToast, showModal, closeModal, fireConfetti } from '../app.js';
 
 let filterStatus = 'all';
 let filterSubject = 'all';
@@ -144,9 +144,16 @@ function setupHomeworkEvents(container, settings) {
   // 完了ボタン
   container.querySelectorAll('.complete-btn').forEach(btn => {
     btn.addEventListener('click', () => {
+      // 完了アニメーション用に要素を取得
+      const item = btn.closest('.homework-item');
+      item.classList.add('completed');
+      
       updateAssignment(btn.dataset.id, { status: 'completed', completedAt: new Date().toISOString() });
+      fireConfetti();
       showToast('宿題を完了にしました！🎉', 'success');
-      renderHomework(container);
+      
+      // 少し遅延させて再描画
+      setTimeout(() => renderHomework(container), 800);
     });
   });
 

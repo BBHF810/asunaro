@@ -169,6 +169,17 @@ export function showToast(message, type = 'info', duration = 3000) {
   }, duration);
 }
 
+export function fireConfetti() {
+  if (typeof confetti === 'function') {
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ['#E74C3C', '#4A90D9', '#2ECC71', '#F39C12', '#9B59B6']
+    });
+  }
+}
+
 function getToastIcon(type) {
   switch (type) {
     case 'success': return '✓';

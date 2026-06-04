@@ -2,7 +2,7 @@
 import { getCurrentUser } from '../auth.js';
 import { getAssignments, getStudyStats, getTestResults, getStudents, getSettings, updateAssignment } from '../store.js';
 import { navigate } from '../router.js';
-import { updatePageTitle } from '../app.js';
+import { updatePageTitle, showToast, fireConfetti } from '../app.js';
 
 export function renderDashboard(container) {
   const user = getCurrentUser();
@@ -178,12 +178,23 @@ function renderStudentDashboard(container, user) {
     </div>
   `;
 
-  // TODOチェックのイベントリスナー
+  // TODOチェック
   container.querySelectorAll('.todo-check').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const id = btn.dataset.assignmentId;
-      updateAssignment(id, { status: 'completed', completedAt: new Date().toISOString() });
-      renderDashboard(container);
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const assignmentId = btn.dataset.assignmentId;
+      const todoItem = btn.closest('.todo-item');
+      
+      // アニメーション用クラス
+      todoItem.classList.add('completing');
+      btn.querySelector('circle').setAttribute('fill', 'var(--status-success)');
+      btn.querySelector('circle').setAttribute('stroke', 'var(--status-success)');
+      
+      updateAssignment(assignmentId, { status: 'completed', completedAt: new Date().toISOString() });
+      fireConfetti();
+      showToast('宿題を完了にしました！🎉', 'success');
+      
+      setTimeout(() => renderDashboard(container), 800);
     });
   });
 }

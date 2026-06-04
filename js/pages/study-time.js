@@ -234,6 +234,12 @@ function setupStudyTimeEvents(container, settings) {
         timerSeconds++;
         const display = document.getElementById('timer-display');
         if (display) display.textContent = formatTime(timerSeconds);
+        
+        // ボタンの活性化
+        if (timerSeconds > 0) {
+          document.getElementById('timer-save')?.removeAttribute('disabled');
+          document.getElementById('timer-reset')?.removeAttribute('disabled');
+        }
       }, 1000);
     }
     const btn = document.getElementById('timer-toggle');
@@ -258,23 +264,28 @@ function setupStudyTimeEvents(container, settings) {
       method: 'timer',
     });
     clearInterval(timerInterval);
-    timerSeconds = 0;
     timerRunning = false;
-    showToast(`${timerSubject} ${minutes}分を記録しました！🎉`, 'success');
+    timerSeconds = 0;
+    timerSubject = '';
+    showToast(`${minutes}分の勉強を記録しました！🎉`, 'success');
     renderStudyTime(container);
   });
 
   // タイマーリセット
   document.getElementById('timer-reset')?.addEventListener('click', () => {
-    clearInterval(timerInterval);
-    timerSeconds = 0;
-    timerRunning = false;
-    const display = document.getElementById('timer-display');
-    if (display) display.textContent = formatTime(0);
-    const btn = document.getElementById('timer-toggle');
-    if (btn) {
-      btn.textContent = '▶ スタート';
-      btn.className = 'btn btn-primary btn-lg';
+    if (confirm('タイマーをリセットしますか？')) {
+      clearInterval(timerInterval);
+      timerRunning = false;
+      timerSeconds = 0;
+      const display = document.getElementById('timer-display');
+      if (display) display.textContent = formatTime(0);
+      const btn = document.getElementById('timer-toggle');
+      if (btn) {
+        btn.textContent = '▶ スタート';
+        btn.className = 'btn btn-primary btn-lg';
+      }
+      document.getElementById('timer-save')?.setAttribute('disabled', 'true');
+      document.getElementById('timer-reset')?.setAttribute('disabled', 'true');
     }
   });
 
