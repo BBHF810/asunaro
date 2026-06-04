@@ -128,9 +128,14 @@ export function renderSchedule(container) {
             <tbody>
               ${DAYS.map((day, dayIdx) => {
                 const currentDate = weekDates[dayIdx];
+                const d = new Date(currentDate);
+                const dateStr = `${d.getMonth() + 1}/${d.getDate()}`;
                 return `
                   <tr class="row-single">
-                    <td class="day-label">${day}</td>
+                    <td class="day-label">
+                      <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 2px;">${dateStr}</div>
+                      <div>${day}</div>
+                    </td>
                     <td class="type-label type-preview" style="font-size: 0.7rem;">宿題</td>
                     ${subjects.map(subject => {
                       const cellKey = `${dayIdx}-${subject}`;
