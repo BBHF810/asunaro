@@ -3,7 +3,7 @@ import { getCurrentUser, isTeacher, isStudent } from '../auth.js';
 import { getWeeklyPlan, saveWeeklyPlan, getStudents, getSettings, getWeekStart, formatDate, getAssignments, addAssignment, updateAssignment, deleteAssignment } from '../store.js';
 import { updatePageTitle, showToast } from '../app.js';
 
-const DAYS = ['月', '火', '水', '木', '金', '土'];
+const DAYS = ['月', '火', '水', '木', '金', '土', '日'];
 
 let currentWeekStart = null;
 let selectedStudentId = null;
