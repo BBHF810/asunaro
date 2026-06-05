@@ -311,6 +311,6 @@ function createEmptyPlan(studentId, weekStart, subjects) {
 function formatWeekRange(weekStart) {
   const start = new Date(weekStart);
   const end = new Date(start);
-  end.setDate(end.getDate() + 5); // 月～土
+  end.setDate(end.getDate() + 6); // 月～日
   return `${start.getMonth() + 1}/${start.getDate()} ～ ${end.getMonth() + 1}/${end.getDate()}`;
 }
