@@ -140,10 +140,8 @@ function renderStudentDashboard(container, user) {
         <div class="todo-list animate-slideUp">
           ${pendingAssignments.slice(0, 5).map(a => `
             <div class="todo-item" data-id="${a.id}">
-              <button class="todo-check" data-assignment-id="${a.id}" aria-label="完了にする">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="12" r="10"></circle>
-                </svg>
+              <button class="btn btn-sm btn-primary todo-check" data-assignment-id="${a.id}" aria-label="完了にする">
+                完了
               </button>
               <div class="todo-content">
                 <span class="badge badge-sm" style="background: ${settings.subjectColors[a.subject] || '#666'}30; color: ${settings.subjectColors[a.subject] || '#999'}">${a.subject}</span>

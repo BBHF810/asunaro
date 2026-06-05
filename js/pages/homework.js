@@ -94,6 +94,9 @@ export function renderHomework(container) {
               ${isStudent() && a.status !== 'completed' ? `
                 <button class="btn btn-sm btn-primary complete-btn" data-id="${a.id}">完了</button>
               ` : ''}
+              ${isStudent() && a.status === 'completed' ? `
+                <button class="btn btn-sm btn-secondary uncomplete-btn" data-id="${a.id}">未完了に戻す</button>
+              ` : ''}
               ${isTeacher() || isStudent() ? `
                 <button class="btn btn-sm btn-ghost edit-btn" data-id="${a.id}">編集</button>
               ` : ''}
@@ -154,6 +157,19 @@ function setupHomeworkEvents(container, settings) {
       
       // 少し遅延させて再描画
       setTimeout(() => renderHomework(container), 800);
+    });
+  });
+
+  // 未完了に戻すボタン
+  container.querySelectorAll('.uncomplete-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.homework-item');
+      item.classList.remove('completed');
+      
+      updateAssignment(btn.dataset.id, { status: 'pending', completedAt: null });
+      showToast('宿題を未完了に戻しました', 'info');
+      
+      setTimeout(() => renderHomework(container), 400);
     });
   });
 

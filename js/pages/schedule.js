@@ -1,13 +1,24 @@
 // 週間予定表ページ
 import { getCurrentUser, isTeacher, isStudent } from '../auth.js';
 import { getWeeklyPlan, saveWeeklyPlan, getStudents, getSettings, getWeekStart, formatDate, getAssignments, addAssignment, updateAssignment, deleteAssignment } from '../store.js';
-import { updatePageTitle, showToast } from '../app.js';
+import { updatePageTitle, showToast, showModal } from '../app.js';
 
 const DAYS = ['月', '火', '水', '木', '金', '土', '日'];
 
 let currentWeekStart = null;
 let selectedStudentId = null;
 let initialized = false;
+
+window.showHomeworkDetail = function(element) {
+  const content = element.dataset.content;
+  if (!content) return;
+  
+  showModal(`
+    <div style="padding: var(--space-4); font-size: var(--text-lg); line-height: var(--leading-relaxed); text-align: center;">
+      ${content}
+    </div>
+  `, { title: '宿題の内容' });
+};
 
 export function renderSchedule(container) {
   updatePageTitle('週間予定表');
@@ -31,7 +42,7 @@ export function renderSchedule(container) {
 
   const plan = getWeeklyPlan(selectedStudentId, currentWeekStart) || createEmptyPlan(selectedStudentId, currentWeekStart, subjects);
   const assignments = getAssignments(selectedStudentId);
-  const canEdit = isTeacher() || (isStudent() && user.id === selectedStudentId);
+  const canEdit = isTeacher();
   const selectedStudent = students.find(s => s.id === selectedStudentId) || user;
 
   // 週の日付を計算
@@ -152,7 +163,7 @@ export function renderSchedule(container) {
                                      placeholder="宿題を入力" data-cell-key="${cellKey}" />
                             </div>
                           ` : `
-                            <div class="cell-wrapper readonly">
+                            <div class="cell-wrapper readonly" ${content ? 'style="cursor: pointer;" onclick="window.showHomeworkDetail(this)" data-content="' + content.replace(/"/g, '&quot;') + '"' : ''}>
                               <span class="cell-text">${content || ''}</span>
                             </div>
                           `}
