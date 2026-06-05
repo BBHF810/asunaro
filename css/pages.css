@@ -218,7 +218,7 @@
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  color: #fff;
+  color: var(--text-primary);
   border-radius: var(--radius-sm);
 }
 
