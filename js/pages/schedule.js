@@ -117,7 +117,6 @@ export function renderSchedule(container) {
             <thead>
               <tr>
                 <th class="day-col">曜日</th>
-                <th class="type-col"></th>
                 ${subjects.map(subject => `
                   <th style="background: ${settings.subjectColors[subject]}15; border-bottom: 3px solid ${settings.subjectColors[subject]}">
                     ${subject}
@@ -136,7 +135,6 @@ export function renderSchedule(container) {
                       <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 2px;">${dateStr}</div>
                       <div>${day}</div>
                     </td>
-                    <td class="type-label type-preview" style="font-size: 0.7rem;">宿題</td>
                     ${subjects.map(subject => {
                       const cellKey = `${dayIdx}-${subject}`;
                       // その日・その教科の宿題を探す（複数ある場合は最初の1つを表示）
@@ -146,21 +144,16 @@ export function renderSchedule(container) {
                       const assignmentId = assignment ? assignment.id : '';
 
                       return `
-                        <td class="cell ${isCompleted ? 'completed' : ''}"
+                        <td class="cell"
                             data-key="${cellKey}" data-date="${currentDate}" data-subject="${subject}" data-assignment-id="${assignmentId}">
                           ${canEdit ? `
                             <div class="cell-wrapper">
                               <input class="cell-input" value="${content}" name="cell-${cellKey}" aria-label="${day} ${subject} 宿題"
-                                     placeholder="·" data-cell-key="${cellKey}" />
-                              <button class="cell-check ${isCompleted ? 'checked' : ''}"
-                                      data-cell-key="${cellKey}" aria-label="完了">
-                                ${isCompleted ? '✓' : ''}
-                              </button>
+                                     placeholder="宿題を入力" data-cell-key="${cellKey}" />
                             </div>
                           ` : `
                             <div class="cell-wrapper readonly">
-                              <span class="cell-text">${content}</span>
-                              ${isCompleted ? '<span class="cell-check checked">✓</span>' : ''}
+                              <span class="cell-text">${content || ''}</span>
                             </div>
                           `}
                         </td>
@@ -242,22 +235,6 @@ function setupScheduleEvents(container, plan, subjects) {
     });
   });
 
-  // セルのチェックボタン
-  container.querySelectorAll('.cell-check').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const key = btn.dataset.cellKey;
-      const cell = plan.cells?.find(c => c.key === key);
-      if (cell) {
-        cell.completed = !cell.completed;
-      } else {
-        if (!plan.cells) plan.cells = [];
-        plan.cells.push({ key, content: '', completed: true });
-      }
-      btn.classList.toggle('checked');
-      btn.textContent = btn.classList.contains('checked') ? '✓' : '';
-      btn.closest('td')?.classList.toggle('completed');
-    });
-  });
 
   // 保存ボタン
   document.getElementById('save-schedule')?.addEventListener('click', () => {
@@ -276,9 +253,6 @@ function setupScheduleEvents(container, plan, subjects) {
       if (!input) return; // read-only mode
 
       const content = input.value.trim();
-      const checkBtn = td.querySelector('.cell-check');
-      const isCompleted = checkBtn ? checkBtn.classList.contains('checked') : false;
-      const status = isCompleted ? 'completed' : 'pending';
       
       const assignmentId = td.dataset.assignmentId;
       const date = td.dataset.date;
@@ -286,15 +260,15 @@ function setupScheduleEvents(container, plan, subjects) {
 
       if (content) {
         if (assignmentId) {
-          // 既存を更新
-          updateAssignment(assignmentId, { content, status });
+          // 既存を更新（ステータスは変更しない）
+          updateAssignment(assignmentId, { content });
         } else {
           // 新規作成
           const newAssignment = addAssignment({
             studentId: selectedStudentId,
             subject: subject,
             content: content,
-            status: status,
+            status: 'pending',
             scheduledDate: date
           });
           td.dataset.assignmentId = newAssignment.id; // 即座にIDを反映

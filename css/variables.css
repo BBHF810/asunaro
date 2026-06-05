@@ -4,24 +4,24 @@
 
 :root {
   /* ── Background ─────────────────────────────────────────── */
-  --bg-primary:   hsl(220, 20%, 8%);
-  --bg-secondary: hsl(220, 18%, 12%);
-  --bg-tertiary:  hsl(220, 16%, 16%);
-  --bg-surface:   hsl(220, 15%, 18%);
+  --bg-primary:   hsl(30, 30%, 97%);       /* ほぼ白、ほんのり暖かいベース */
+  --bg-secondary: hsl(0, 0%, 100%);        /* カード背景は白 */
+  --bg-tertiary:  hsl(30, 20%, 95%);       /* hover状態 */
+  --bg-surface:   hsl(30, 15%, 93%);       /* 入力フィールド */
 
   /* ── Text ───────────────────────────────────────────────── */
-  --text-primary:   hsl(0, 0%, 95%);
-  --text-secondary: hsl(0, 0%, 70%);
-  --text-muted:     hsl(0, 0%, 50%);
+  --text-primary:   hsl(220, 25%, 20%);    /* 濃紺の本文 */
+  --text-secondary: hsl(220, 15%, 45%);    /* サブテキスト */
+  --text-muted:     hsl(220, 10%, 60%);    /* 薄いテキスト */
 
   /* ── Accent / Brand ─────────────────────────────────────── */
-  --accent-primary:   hsl(25, 95%, 55%);
-  --accent-secondary: hsl(30, 90%, 60%);
-  --accent-gradient:  linear-gradient(135deg, hsl(25, 95%, 55%), hsl(35, 90%, 55%));
+  --accent-primary:   hsl(25, 95%, 50%);   /* 鮮やかオレンジ */
+  --accent-secondary: hsl(30, 90%, 55%);   /* アンバー */
+  --accent-gradient:  linear-gradient(135deg, hsl(25, 95%, 50%), hsl(35, 90%, 50%));
 
   /* ── Border ─────────────────────────────────────────────── */
-  --border-color: hsl(220, 15%, 20%);
-  --border-light: hsl(220, 15%, 25%);
+  --border-color: hsl(30, 15%, 88%);
+  --border-light: hsl(30, 15%, 82%);
 
   /* ── Subject Colors (教科別) ────────────────────────────── */
   --subject-english:  #4A90D9;   /* 英語  — 青   */
@@ -36,9 +36,9 @@
   --status-danger:  #E74C3C;
   --status-info:    #4A90D9;
 
-  /* ── Glassmorphism ──────────────────────────────────────── */
-  --glass-bg:     rgba(255, 255, 255, 0.05);
-  --glass-border: rgba(255, 255, 255, 0.1);
+  /* ── Glassmorphism → ライト用に変更 ────────────────────── */
+  --glass-bg:     rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(0, 0, 0, 0.08);
 
   /* ── Typography ─────────────────────────────────────────── */
   --font-main: 'Noto Sans JP', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -74,15 +74,11 @@
   --radius-xl:   1.5rem;
   --radius-full: 9999px;
 
-  /* ── Shadows ────────────────────────────────────────────── */
-  --shadow-sm:  0 1px 2px  rgba(0, 0, 0, 0.3),
-                0 1px 3px  rgba(0, 0, 0, 0.15);
-  --shadow-md:  0 4px 6px  rgba(0, 0, 0, 0.3),
-                0 2px 4px  rgba(0, 0, 0, 0.2);
-  --shadow-lg:  0 10px 25px rgba(0, 0, 0, 0.4),
-                0 6px 10px  rgba(0, 0, 0, 0.25);
-  --shadow-glow: 0 0 20px rgba(230, 126, 34, 0.3),
-                 0 0 40px rgba(230, 126, 34, 0.15);
+  /* ── Shadows → ライト用の柔らかい影 ────────────────────── */
+  --shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md:  0 4px 8px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+  --shadow-lg:  0 10px 25px rgba(0, 0, 0, 0.1), 0 6px 10px rgba(0, 0, 0, 0.06);
+  --shadow-glow: 0 0 20px rgba(230, 126, 34, 0.2), 0 0 40px rgba(230, 126, 34, 0.1);
 
   /* ── Transitions ────────────────────────────────────────── */
   --transition-fast:   150ms ease;

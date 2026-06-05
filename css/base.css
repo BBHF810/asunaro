@@ -101,7 +101,7 @@ p {
 
 /* ── Selection ────────────────────────────────────────────── */
 ::selection {
-  background-color: hsla(25, 95%, 55%, 0.3);
+  background-color: hsla(25, 95%, 50%, 0.2);
   color: var(--text-primary);
 }
 
