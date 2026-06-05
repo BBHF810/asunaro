@@ -14,13 +14,13 @@ import { renderSidebar } from './components/sidebar.js';
 // アプリ初期化
 async function initApp() {
   initStore();
-  restoreSession();
   registerRoutes();
-  renderAppShell();
   
   // データがロードされるのを待つ
   await storeReadyPromise;
   
+  restoreSession();
+  renderAppShell();
   initRouter();
 }
 

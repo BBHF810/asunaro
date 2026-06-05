@@ -256,7 +256,7 @@ function setupStudyTimeEvents(container, settings) {
       const containerHw = document.getElementById('timer-assignment-container');
       const selectHw = document.getElementById('timer-assignment');
       if (assignments.length > 0) {
-        selectHw.innerHTML = '<option value="">(なし)</option>' + assignments.map(a => `<option value="${a.id}">${a.content}</option>`).join('');
+        selectHw.innerHTML = '<option value="">(なし)</option>' + assignments.map(a => `<option value="${a.id}">${a.scheduledDate ? `[${formatShortDate(a.scheduledDate)}] ` : ''}${a.content}</option>`).join('');
         containerHw.style.display = 'block';
       } else {
         containerHw.style.display = 'none';
@@ -276,7 +276,7 @@ function setupStudyTimeEvents(container, settings) {
     }
     const assignments = getAssignments(selectedStudentId).filter(a => a.status !== 'completed' && a.subject === subj);
     if (assignments.length > 0) {
-      selectHw.innerHTML = '<option value="">(なし)</option>' + assignments.map(a => `<option value="${a.id}">${a.content}</option>`).join('');
+      selectHw.innerHTML = '<option value="">(なし)</option>' + assignments.map(a => `<option value="${a.id}">${a.scheduledDate ? `[${formatShortDate(a.scheduledDate)}] ` : ''}${a.content}</option>`).join('');
       containerHw.style.display = 'block';
     } else {
       containerHw.style.display = 'none';
@@ -492,4 +492,10 @@ function formatTime(totalSeconds) {
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   }
   return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+
+function formatShortDate(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  return `${d.getMonth() + 1}/${d.getDate()}`;
 }
