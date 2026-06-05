@@ -1,27 +1,13 @@
 // 教材ライブラリページ
 import { updatePageTitle } from '../app.js';
 import { getSettings } from '../store.js';
-
-let materialsData = [];
+import { materialsData } from '../data/materials.js';
 
 export async function renderMaterials(container) {
   updatePageTitle('教材ライブラリ', '📚');
 
   const settings = getSettings();
 
-  // JSONデータのフェッチ
-  if (materialsData.length === 0) {
-    try {
-      const res = await fetch('/materials/index.json');
-      if (res.ok) {
-        materialsData = await res.json();
-      } else {
-        console.error('Failed to load materials JSON');
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  }
 
   renderUI(container, settings, '中1', '');
 }
@@ -68,7 +54,7 @@ function renderUI(container, settings, selectedGrade, selectedSubject) {
               <h3 style="font-size:var(--text-md); margin-bottom:var(--space-4); flex-grow:1;">
                 ${m.title}
               </h3>
-              <a href="${m.path}" target="_blank" class="btn btn-sm btn-primary" style="text-align:center; display:block; width:100%;">
+              <a href=".${m.path}" target="_blank" class="btn btn-sm btn-primary" style="text-align:center; display:block; width:100%;">
                 開く <svg style="display:inline; margin-left:4px; vertical-align:middle;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
               </a>
             </div>

@@ -1,0 +1,362 @@
+export const materialsData = [
+  {
+    "grade": "中1",
+    "subject": "国語",
+    "type": "らくらく帳",
+    "isAnswer": false,
+    "title": "R03国語らくらく帳光村　中1",
+    "path": "/materials/%E4%B8%AD1/R03%E5%9B%BD%E8%AA%9E%E3%82%89%E3%81%8F%E3%82%89%E3%81%8F%E5%B8%B3%E5%85%89%E6%9D%91%E3%80%80%E4%B8%AD1.pdf"
+  },
+  {
+    "grade": "中1",
+    "subject": "国語",
+    "type": "らくらく帳",
+    "isAnswer": true,
+    "title": "R03国語らくらく帳光村　中1　解答",
+    "path": "/materials/%E4%B8%AD1/R03%E5%9B%BD%E8%AA%9E%E3%82%89%E3%81%8F%E3%82%89%E3%81%8F%E5%B8%B3%E5%85%89%E6%9D%91%E3%80%80%E4%B8%AD1%E3%80%80%E8%A7%A3%E7%AD%94.pdf"
+  },
+  {
+    "grade": "中1",
+    "subject": "国語",
+    "type": "テスト対策",
+    "isAnswer": false,
+    "title": "R03国語テスト対策光村　中1",
+    "path": "/materials/%E4%B8%AD1/R03%E5%9B%BD%E8%AA%9E%E3%83%86%E3%82%B9%E3%83%88%E5%AF%BE%E7%AD%96%E5%85%89%E6%9D%91%E3%80%80%E4%B8%AD1.pdf"
+  },
+  {
+    "grade": "中1",
+    "subject": "国語",
+    "type": "テスト対策",
+    "isAnswer": true,
+    "title": "R03国語テスト対策光村　中1　解答",
+    "path": "/materials/%E4%B8%AD1/R03%E5%9B%BD%E8%AA%9E%E3%83%86%E3%82%B9%E3%83%88%E5%AF%BE%E7%AD%96%E5%85%89%E6%9D%91%E3%80%80%E4%B8%AD1%E3%80%80%E8%A7%A3%E7%AD%94.pdf"
+  },
+  {
+    "grade": "中1",
+    "subject": "国語",
+    "type": "要点シート",
+    "isAnswer": false,
+    "title": "R03国語要点シート　中1",
+    "path": "/materials/%E4%B8%AD1/R03%E5%9B%BD%E8%AA%9E%E8%A6%81%E7%82%B9%E3%82%B7%E3%83%BC%E3%83%88%E3%80%80%E4%B8%AD1.pdf"
+  },
+  {
+    "grade": "中1",
+    "subject": "数学",
+    "type": "らくらく帳",
+    "isAnswer": false,
+    "title": "R03数学らくらく帳教出　中1",
+    "path": "/materials/%E4%B8%AD1/R03%E6%95%B0%E5%AD%A6%E3%82%89%E3%81%8F%E3%82%89%E3%81%8F%E5%B8%B3%E6%95%99%E5%87%BA%E3%80%80%E4%B8%AD1.pdf"
+  },
+  {
+    "grade": "中1",
+    "subject": "数学",
+    "type": "らくらく帳",
+    "isAnswer": true,
+    "title": "R03数学らくらく帳教出　中1　解答",
+    "path": "/materials/%E4%B8%AD1/R03%E6%95%B0%E5%AD%A6%E3%82%89%E3%81%8F%E3%82%89%E3%81%8F%E5%B8%B3%E6%95%99%E5%87%BA%E3%80%80%E4%B8%AD1%E3%80%80%E8%A7%A3%E7%AD%94.pdf"
+  },
+  {
+    "grade": "中1",
+    "subject": "数学",
+    "type": "テスト対策",
+    "isAnswer": false,
+    "title": "R03数学テスト対策教出　中1",
+    "path": "/materials/%E4%B8%AD1/R03%E6%95%B0%E5%AD%A6%E3%83%86%E3%82%B9%E3%83%88%E5%AF%BE%E7%AD%96%E6%95%99%E5%87%BA%E3%80%80%E4%B8%AD1.pdf"
+  },
+  {
+    "grade": "中1",
+    "subject": "数学",
+    "type": "テスト対策",
+    "isAnswer": true,
+    "title": "R03数学テスト対策教出　中1　解答",
+    "path": "/materials/%E4%B8%AD1/R03%E6%95%B0%E5%AD%A6%E3%83%86%E3%82%B9%E3%83%88%E5%AF%BE%E7%AD%96%E6%95%99%E5%87%BA%E3%80%80%E4%B8%AD1%E3%80%80%E8%A7%A3%E7%AD%94.pdf"
+  },
+  {
+    "grade": "中1",
+    "subject": "数学",
+    "type": "要点シート",
+    "isAnswer": false,
+    "title": "R03数学要点シート　中1",
+    "path": "/materials/%E4%B8%AD1/R03%E6%95%B0%E5%AD%A6%E8%A6%81%E7%82%B9%E3%82%B7%E3%83%BC%E3%83%88%E3%80%80%E4%B8%AD1.pdf"
+  },
+  {
+    "grade": "中1",
+    "subject": "英語",
+    "type": "らくらく帳",
+    "isAnswer": false,
+    "title": "R03英語らくらく帳東書　中1",
+    "path": "/materials/%E4%B8%AD1/R03%E8%8B%B1%E8%AA%9E%E3%82%89%E3%81%8F%E3%82%89%E3%81%8F%E5%B8%B3%E6%9D%B1%E6%9B%B8%E3%80%80%E4%B8%AD1.pdf"
+  },
+  {
+    "grade": "中1",
+    "subject": "英語",
+    "type": "らくらく帳",
+    "isAnswer": true,
+    "title": "R03英語らくらく帳東書　中1　解答",
+    "path": "/materials/%E4%B8%AD1/R03%E8%8B%B1%E8%AA%9E%E3%82%89%E3%81%8F%E3%82%89%E3%81%8F%E5%B8%B3%E6%9D%B1%E6%9B%B8%E3%80%80%E4%B8%AD1%E3%80%80%E8%A7%A3%E7%AD%94.pdf"
+  },
+  {
+    "grade": "中1",
+    "subject": "英語",
+    "type": "テスト対策",
+    "isAnswer": false,
+    "title": "R03英語テスト対策東書　中1",
+    "path": "/materials/%E4%B8%AD1/R03%E8%8B%B1%E8%AA%9E%E3%83%86%E3%82%B9%E3%83%88%E5%AF%BE%E7%AD%96%E6%9D%B1%E6%9B%B8%E3%80%80%E4%B8%AD1.pdf"
+  },
+  {
+    "grade": "中1",
+    "subject": "英語",
+    "type": "テスト対策",
+    "isAnswer": true,
+    "title": "R03英語テスト対策東書　中1　解答",
+    "path": "/materials/%E4%B8%AD1/R03%E8%8B%B1%E8%AA%9E%E3%83%86%E3%82%B9%E3%83%88%E5%AF%BE%E7%AD%96%E6%9D%B1%E6%9B%B8%E3%80%80%E4%B8%AD1%E3%80%80%E8%A7%A3%E7%AD%94.pdf"
+  },
+  {
+    "grade": "中1",
+    "subject": "英語",
+    "type": "要点シート",
+    "isAnswer": false,
+    "title": "R03英語要点シート　中1",
+    "path": "/materials/%E4%B8%AD1/R03%E8%8B%B1%E8%AA%9E%E8%A6%81%E7%82%B9%E3%82%B7%E3%83%BC%E3%83%88%E3%80%80%E4%B8%AD1.pdf"
+  },
+  {
+    "grade": "中2",
+    "subject": "国語",
+    "type": "らくらく帳",
+    "isAnswer": false,
+    "title": "R03国語らくらく帳光村　中2",
+    "path": "/materials/%E4%B8%AD2/R03%E5%9B%BD%E8%AA%9E%E3%82%89%E3%81%8F%E3%82%89%E3%81%8F%E5%B8%B3%E5%85%89%E6%9D%91%E3%80%80%E4%B8%AD2.pdf"
+  },
+  {
+    "grade": "中2",
+    "subject": "国語",
+    "type": "らくらく帳",
+    "isAnswer": true,
+    "title": "R03国語らくらく帳光村　中2　解答",
+    "path": "/materials/%E4%B8%AD2/R03%E5%9B%BD%E8%AA%9E%E3%82%89%E3%81%8F%E3%82%89%E3%81%8F%E5%B8%B3%E5%85%89%E6%9D%91%E3%80%80%E4%B8%AD2%E3%80%80%E8%A7%A3%E7%AD%94.pdf"
+  },
+  {
+    "grade": "中2",
+    "subject": "国語",
+    "type": "テスト対策",
+    "isAnswer": false,
+    "title": "R03国語テスト対策光村　中2",
+    "path": "/materials/%E4%B8%AD2/R03%E5%9B%BD%E8%AA%9E%E3%83%86%E3%82%B9%E3%83%88%E5%AF%BE%E7%AD%96%E5%85%89%E6%9D%91%E3%80%80%E4%B8%AD2.pdf"
+  },
+  {
+    "grade": "中2",
+    "subject": "国語",
+    "type": "テスト対策",
+    "isAnswer": true,
+    "title": "R03国語テスト対策光村　中2　解答",
+    "path": "/materials/%E4%B8%AD2/R03%E5%9B%BD%E8%AA%9E%E3%83%86%E3%82%B9%E3%83%88%E5%AF%BE%E7%AD%96%E5%85%89%E6%9D%91%E3%80%80%E4%B8%AD2%E3%80%80%E8%A7%A3%E7%AD%94.pdf"
+  },
+  {
+    "grade": "中2",
+    "subject": "国語",
+    "type": "要点シート",
+    "isAnswer": false,
+    "title": "R03国語要点シート　中2",
+    "path": "/materials/%E4%B8%AD2/R03%E5%9B%BD%E8%AA%9E%E8%A6%81%E7%82%B9%E3%82%B7%E3%83%BC%E3%83%88%E3%80%80%E4%B8%AD2.pdf"
+  },
+  {
+    "grade": "中2",
+    "subject": "数学",
+    "type": "らくらく帳",
+    "isAnswer": false,
+    "title": "R03数学らくらく帳教出　中2",
+    "path": "/materials/%E4%B8%AD2/R03%E6%95%B0%E5%AD%A6%E3%82%89%E3%81%8F%E3%82%89%E3%81%8F%E5%B8%B3%E6%95%99%E5%87%BA%E3%80%80%E4%B8%AD2.pdf"
+  },
+  {
+    "grade": "中2",
+    "subject": "数学",
+    "type": "らくらく帳",
+    "isAnswer": true,
+    "title": "R03数学らくらく帳教出　中2　解答",
+    "path": "/materials/%E4%B8%AD2/R03%E6%95%B0%E5%AD%A6%E3%82%89%E3%81%8F%E3%82%89%E3%81%8F%E5%B8%B3%E6%95%99%E5%87%BA%E3%80%80%E4%B8%AD2%E3%80%80%E8%A7%A3%E7%AD%94.pdf"
+  },
+  {
+    "grade": "中2",
+    "subject": "数学",
+    "type": "テスト対策",
+    "isAnswer": false,
+    "title": "R03数学テスト対策教出　中2",
+    "path": "/materials/%E4%B8%AD2/R03%E6%95%B0%E5%AD%A6%E3%83%86%E3%82%B9%E3%83%88%E5%AF%BE%E7%AD%96%E6%95%99%E5%87%BA%E3%80%80%E4%B8%AD2.pdf"
+  },
+  {
+    "grade": "中2",
+    "subject": "数学",
+    "type": "テスト対策",
+    "isAnswer": true,
+    "title": "R03数学テスト対策教出　中2　解答",
+    "path": "/materials/%E4%B8%AD2/R03%E6%95%B0%E5%AD%A6%E3%83%86%E3%82%B9%E3%83%88%E5%AF%BE%E7%AD%96%E6%95%99%E5%87%BA%E3%80%80%E4%B8%AD2%E3%80%80%E8%A7%A3%E7%AD%94.pdf"
+  },
+  {
+    "grade": "中2",
+    "subject": "数学",
+    "type": "要点シート",
+    "isAnswer": false,
+    "title": "R03数学要点シート　中2",
+    "path": "/materials/%E4%B8%AD2/R03%E6%95%B0%E5%AD%A6%E8%A6%81%E7%82%B9%E3%82%B7%E3%83%BC%E3%83%88%E3%80%80%E4%B8%AD2.pdf"
+  },
+  {
+    "grade": "中2",
+    "subject": "英語",
+    "type": "らくらく帳",
+    "isAnswer": false,
+    "title": "R03英語らくらく帳東書　中2",
+    "path": "/materials/%E4%B8%AD2/R03%E8%8B%B1%E8%AA%9E%E3%82%89%E3%81%8F%E3%82%89%E3%81%8F%E5%B8%B3%E6%9D%B1%E6%9B%B8%E3%80%80%E4%B8%AD2.pdf"
+  },
+  {
+    "grade": "中2",
+    "subject": "英語",
+    "type": "らくらく帳",
+    "isAnswer": true,
+    "title": "R03英語らくらく帳東書　中2　解答",
+    "path": "/materials/%E4%B8%AD2/R03%E8%8B%B1%E8%AA%9E%E3%82%89%E3%81%8F%E3%82%89%E3%81%8F%E5%B8%B3%E6%9D%B1%E6%9B%B8%E3%80%80%E4%B8%AD2%E3%80%80%E8%A7%A3%E7%AD%94.pdf"
+  },
+  {
+    "grade": "中2",
+    "subject": "英語",
+    "type": "テスト対策",
+    "isAnswer": false,
+    "title": "R03英語テスト対策東書　中2",
+    "path": "/materials/%E4%B8%AD2/R03%E8%8B%B1%E8%AA%9E%E3%83%86%E3%82%B9%E3%83%88%E5%AF%BE%E7%AD%96%E6%9D%B1%E6%9B%B8%E3%80%80%E4%B8%AD2.pdf"
+  },
+  {
+    "grade": "中2",
+    "subject": "英語",
+    "type": "テスト対策",
+    "isAnswer": true,
+    "title": "R03英語テスト対策東書　中2　解答",
+    "path": "/materials/%E4%B8%AD2/R03%E8%8B%B1%E8%AA%9E%E3%83%86%E3%82%B9%E3%83%88%E5%AF%BE%E7%AD%96%E6%9D%B1%E6%9B%B8%E3%80%80%E4%B8%AD2%E3%80%80%E8%A7%A3%E7%AD%94.pdf"
+  },
+  {
+    "grade": "中2",
+    "subject": "英語",
+    "type": "要点シート",
+    "isAnswer": false,
+    "title": "R03英語要点シート　中2",
+    "path": "/materials/%E4%B8%AD2/R03%E8%8B%B1%E8%AA%9E%E8%A6%81%E7%82%B9%E3%82%B7%E3%83%BC%E3%83%88%E3%80%80%E4%B8%AD2.pdf"
+  },
+  {
+    "grade": "中3",
+    "subject": "国語",
+    "type": "らくらく帳",
+    "isAnswer": false,
+    "title": "R03国語らくらく帳光村　中3",
+    "path": "/materials/%E4%B8%AD3/R03%E5%9B%BD%E8%AA%9E%E3%82%89%E3%81%8F%E3%82%89%E3%81%8F%E5%B8%B3%E5%85%89%E6%9D%91%E3%80%80%E4%B8%AD3.pdf"
+  },
+  {
+    "grade": "中3",
+    "subject": "国語",
+    "type": "らくらく帳",
+    "isAnswer": true,
+    "title": "R03国語らくらく帳光村　中3　解答",
+    "path": "/materials/%E4%B8%AD3/R03%E5%9B%BD%E8%AA%9E%E3%82%89%E3%81%8F%E3%82%89%E3%81%8F%E5%B8%B3%E5%85%89%E6%9D%91%E3%80%80%E4%B8%AD3%E3%80%80%E8%A7%A3%E7%AD%94.pdf"
+  },
+  {
+    "grade": "中3",
+    "subject": "国語",
+    "type": "テスト対策",
+    "isAnswer": false,
+    "title": "R03国語テスト対策光村　中3",
+    "path": "/materials/%E4%B8%AD3/R03%E5%9B%BD%E8%AA%9E%E3%83%86%E3%82%B9%E3%83%88%E5%AF%BE%E7%AD%96%E5%85%89%E6%9D%91%E3%80%80%E4%B8%AD3.pdf"
+  },
+  {
+    "grade": "中3",
+    "subject": "国語",
+    "type": "テスト対策",
+    "isAnswer": true,
+    "title": "R03国語テスト対策光村　中3　解答",
+    "path": "/materials/%E4%B8%AD3/R03%E5%9B%BD%E8%AA%9E%E3%83%86%E3%82%B9%E3%83%88%E5%AF%BE%E7%AD%96%E5%85%89%E6%9D%91%E3%80%80%E4%B8%AD3%E3%80%80%E8%A7%A3%E7%AD%94.pdf"
+  },
+  {
+    "grade": "中3",
+    "subject": "国語",
+    "type": "要点シート",
+    "isAnswer": false,
+    "title": "R03国語要点シート　中3",
+    "path": "/materials/%E4%B8%AD3/R03%E5%9B%BD%E8%AA%9E%E8%A6%81%E7%82%B9%E3%82%B7%E3%83%BC%E3%83%88%E3%80%80%E4%B8%AD3.pdf"
+  },
+  {
+    "grade": "中3",
+    "subject": "数学",
+    "type": "らくらく帳",
+    "isAnswer": false,
+    "title": "R03数学らくらく帳教出　中3",
+    "path": "/materials/%E4%B8%AD3/R03%E6%95%B0%E5%AD%A6%E3%82%89%E3%81%8F%E3%82%89%E3%81%8F%E5%B8%B3%E6%95%99%E5%87%BA%E3%80%80%E4%B8%AD3.pdf"
+  },
+  {
+    "grade": "中3",
+    "subject": "数学",
+    "type": "らくらく帳",
+    "isAnswer": true,
+    "title": "R03数学らくらく帳教出　中3　解答",
+    "path": "/materials/%E4%B8%AD3/R03%E6%95%B0%E5%AD%A6%E3%82%89%E3%81%8F%E3%82%89%E3%81%8F%E5%B8%B3%E6%95%99%E5%87%BA%E3%80%80%E4%B8%AD3%E3%80%80%E8%A7%A3%E7%AD%94.pdf"
+  },
+  {
+    "grade": "中3",
+    "subject": "数学",
+    "type": "テスト対策",
+    "isAnswer": false,
+    "title": "R03数学テスト対策教出　中3",
+    "path": "/materials/%E4%B8%AD3/R03%E6%95%B0%E5%AD%A6%E3%83%86%E3%82%B9%E3%83%88%E5%AF%BE%E7%AD%96%E6%95%99%E5%87%BA%E3%80%80%E4%B8%AD3.pdf"
+  },
+  {
+    "grade": "中3",
+    "subject": "数学",
+    "type": "テスト対策",
+    "isAnswer": true,
+    "title": "R03数学テスト対策教出　中3　解答",
+    "path": "/materials/%E4%B8%AD3/R03%E6%95%B0%E5%AD%A6%E3%83%86%E3%82%B9%E3%83%88%E5%AF%BE%E7%AD%96%E6%95%99%E5%87%BA%E3%80%80%E4%B8%AD3%E3%80%80%E8%A7%A3%E7%AD%94.pdf"
+  },
+  {
+    "grade": "中3",
+    "subject": "数学",
+    "type": "要点シート",
+    "isAnswer": false,
+    "title": "R03数学要点シート　中3",
+    "path": "/materials/%E4%B8%AD3/R03%E6%95%B0%E5%AD%A6%E8%A6%81%E7%82%B9%E3%82%B7%E3%83%BC%E3%83%88%E3%80%80%E4%B8%AD3.pdf"
+  },
+  {
+    "grade": "中3",
+    "subject": "英語",
+    "type": "らくらく帳",
+    "isAnswer": false,
+    "title": "R03英語らくらく帳東書　中3",
+    "path": "/materials/%E4%B8%AD3/R03%E8%8B%B1%E8%AA%9E%E3%82%89%E3%81%8F%E3%82%89%E3%81%8F%E5%B8%B3%E6%9D%B1%E6%9B%B8%E3%80%80%E4%B8%AD3.pdf"
+  },
+  {
+    "grade": "中3",
+    "subject": "英語",
+    "type": "らくらく帳",
+    "isAnswer": true,
+    "title": "R03英語らくらく帳東書　中3　解答",
+    "path": "/materials/%E4%B8%AD3/R03%E8%8B%B1%E8%AA%9E%E3%82%89%E3%81%8F%E3%82%89%E3%81%8F%E5%B8%B3%E6%9D%B1%E6%9B%B8%E3%80%80%E4%B8%AD3%E3%80%80%E8%A7%A3%E7%AD%94.pdf"
+  },
+  {
+    "grade": "中3",
+    "subject": "英語",
+    "type": "テスト対策",
+    "isAnswer": false,
+    "title": "R03英語テスト対策東書　中3",
+    "path": "/materials/%E4%B8%AD3/R03%E8%8B%B1%E8%AA%9E%E3%83%86%E3%82%B9%E3%83%88%E5%AF%BE%E7%AD%96%E6%9D%B1%E6%9B%B8%E3%80%80%E4%B8%AD3.pdf"
+  },
+  {
+    "grade": "中3",
+    "subject": "英語",
+    "type": "テスト対策",
+    "isAnswer": true,
+    "title": "R03英語テスト対策東書　中3　解答",
+    "path": "/materials/%E4%B8%AD3/R03%E8%8B%B1%E8%AA%9E%E3%83%86%E3%82%B9%E3%83%88%E5%AF%BE%E7%AD%96%E6%9D%B1%E6%9B%B8%E3%80%80%E4%B8%AD3%E3%80%80%E8%A7%A3%E7%AD%94.pdf"
+  },
+  {
+    "grade": "中3",
+    "subject": "英語",
+    "type": "要点シート",
+    "isAnswer": false,
+    "title": "R03英語要点シート　中3",
+    "path": "/materials/%E4%B8%AD3/R03%E8%8B%B1%E8%AA%9E%E8%A6%81%E7%82%B9%E3%82%B7%E3%83%BC%E3%83%88%E3%80%80%E4%B8%AD3.pdf"
+  }
+];
