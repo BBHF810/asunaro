@@ -6,7 +6,6 @@ const NAV_ITEMS = {
   teacher: [
     { path: '/dashboard', icon: '🏠', label: 'ダッシュボード' },
     { path: '/schedule', icon: '📅', label: '週間予定表' },
-    { path: '/homework', icon: '📝', label: '宿題管理' },
     { path: '/tests', icon: '📊', label: 'テスト結果' },
     { path: '/study-time', icon: '⏱️', label: '勉強時間' },
     { path: '/stats', icon: '📈', label: '学習統計' },
@@ -15,7 +14,6 @@ const NAV_ITEMS = {
   student: [
     { path: '/dashboard', icon: '🏠', label: 'ダッシュボード' },
     { path: '/schedule', icon: '📅', label: '週間予定表' },
-    { path: '/homework', icon: '📝', label: '宿題管理' },
     { path: '/tests', icon: '📊', label: 'テスト結果' },
     { path: '/study-time', icon: '⏱️', label: '勉強時間' },
     { path: '/stats', icon: '📈', label: '学習統計' },

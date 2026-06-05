@@ -37,6 +37,10 @@ export function logout() {
  * @returns {object|null} 現在のユーザー情報
  */
 export function getCurrentUser() {
+  if (currentUser) {
+    const latest = getUser(currentUser.id);
+    if (latest) currentUser = latest;
+  }
   return currentUser;
 }
 

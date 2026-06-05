@@ -1,6 +1,6 @@
 // 勉強時間ページ
 import { getCurrentUser, isStudent } from '../auth.js';
-import { addStudyLog, getStudyLogs, getStudyStats, getStudents, getSettings, formatDate, updateStudyLog, deleteStudyLog } from '../store.js';
+import { addStudyLog, getStudyLogs, getStudyStats, getStudents, getSettings, formatDate, updateStudyLog, deleteStudyLog, getAssignments, updateAssignment } from '../store.js';
 import { updatePageTitle, showToast, showModal, closeModal } from '../app.js';
 
 let timerInterval = null;
@@ -34,6 +34,7 @@ export function renderStudyTime(container) {
     return (b.createdAt || '').localeCompare(a.createdAt || '');
   });
   const selectedStudent = students.find(s => s.id === selectedStudentId) || user;
+  const assignments = getAssignments(selectedStudentId).filter(a => a.status !== 'completed');
 
   // 今週のログ
   const weekStart = new Date();
@@ -81,6 +82,17 @@ export function renderStudyTime(container) {
                   </button>
                 `).join('')}
               </div>
+              </div>
+            </div>
+            <div class="timer-assignment-select" style="margin-top: 1rem; display: none;" id="timer-assignment-container">
+              <label class="text-sm text-muted">対応する宿題 (任意):</label>
+              <select class="select" id="timer-assignment" style="margin-bottom: 0.5rem;">
+                <option value="">(なし)</option>
+              </select>
+              <label style="display:flex; align-items:center; gap:0.5rem; font-size:var(--text-sm);">
+                <input type="checkbox" id="timer-complete-hw">
+                この宿題を完了にする
+              </label>
             </div>
             <div class="timer-controls">
               <button class="btn ${timerRunning ? 'btn-secondary' : 'btn-primary'} btn-lg" id="timer-toggle">
@@ -103,10 +115,21 @@ export function renderStudyTime(container) {
           <div class="card-body">
             <div class="manual-entry-form">
               <select class="select" id="manual-subject">
+                <option value="">(教科を選択)</option>
                 ${settings.subjects.map(s => `<option value="${s}">${s}</option>`).join('')}
               </select>
               <input class="input" type="number" id="manual-duration" placeholder="分数" min="1" style="width: 100px" />
               <button class="btn btn-primary btn-sm" id="manual-save">記録</button>
+            </div>
+            <div class="manual-assignment-select" style="margin-top: 1rem; display: none;" id="manual-assignment-container">
+              <label class="text-sm text-muted">対応する宿題 (任意):</label>
+              <select class="select" id="manual-assignment" style="margin-bottom: 0.5rem;">
+                <option value="">(なし)</option>
+              </select>
+              <label style="display:flex; align-items:center; gap:0.5rem; font-size:var(--text-sm);">
+                <input type="checkbox" id="manual-complete-hw">
+                この宿題を完了にする
+              </label>
             </div>
           </div>
         </div>
@@ -183,6 +206,7 @@ export function renderStudyTime(container) {
                     <span class="badge badge-sm" style="background: ${settings.subjectColors[log.subject]}20; color: ${settings.subjectColors[log.subject]}">${log.subject}</span>
                     <span class="study-log-duration" style="margin: 0 10px;">${log.duration}分</span>
                     <span class="text-muted text-sm">${log.method === 'timer' ? 'タイマー' : '手動'}</span>
+                    ${log.assignmentContent ? `<span class="text-sm" style="margin-left:8px; color:var(--text-secondary);">宿題: ${log.assignmentContent}</span>` : ''}
                   </div>
                   <div>
                     <button class="btn btn-sm btn-ghost edit-log-btn" data-id="${log.id}">編集</button>
@@ -226,7 +250,38 @@ function setupStudyTimeEvents(container, settings) {
       btn.classList.remove('btn-secondary');
       btn.classList.add('btn-primary');
       btn.style.background = settings.subjectColors[timerSubject];
+
+      // 宿題の絞り込み
+      const assignments = getAssignments(selectedStudentId).filter(a => a.status !== 'completed' && a.subject === timerSubject);
+      const containerHw = document.getElementById('timer-assignment-container');
+      const selectHw = document.getElementById('timer-assignment');
+      if (assignments.length > 0) {
+        selectHw.innerHTML = '<option value="">(なし)</option>' + assignments.map(a => `<option value="${a.id}">${a.content}</option>`).join('');
+        containerHw.style.display = 'block';
+      } else {
+        containerHw.style.display = 'none';
+        selectHw.value = '';
+      }
     });
+  });
+
+  // 手動記録 教科選択
+  document.getElementById('manual-subject')?.addEventListener('change', (e) => {
+    const subj = e.target.value;
+    const containerHw = document.getElementById('manual-assignment-container');
+    const selectHw = document.getElementById('manual-assignment');
+    if (!subj) {
+      containerHw.style.display = 'none';
+      return;
+    }
+    const assignments = getAssignments(selectedStudentId).filter(a => a.status !== 'completed' && a.subject === subj);
+    if (assignments.length > 0) {
+      selectHw.innerHTML = '<option value="">(なし)</option>' + assignments.map(a => `<option value="${a.id}">${a.content}</option>`).join('');
+      containerHw.style.display = 'block';
+    } else {
+      containerHw.style.display = 'none';
+      selectHw.value = '';
+    }
   });
 
   // タイマートグル
@@ -266,17 +321,40 @@ function setupStudyTimeEvents(container, settings) {
       return;
     }
     const minutes = Math.round(timerSeconds / 60);
+    const assignmentSelect = document.getElementById('timer-assignment');
+    const completeCheck = document.getElementById('timer-complete-hw');
+    const assignmentId = assignmentSelect ? assignmentSelect.value : null;
+    const isComplete = completeCheck ? completeCheck.checked : false;
+
+    let assignmentContent = null;
+    if (assignmentId) {
+      const a = getAssignments(selectedStudentId).find(x => x.id === assignmentId);
+      if (a) assignmentContent = a.content;
+    }
+
     addStudyLog({
       studentId: selectedStudentId,
       subject: timerSubject,
       date: formatDate(new Date()),
       duration: minutes,
       method: 'timer',
+      assignmentId,
+      assignmentContent
     });
+
+    if (assignmentId && isComplete) {
+      updateAssignment(assignmentId, { status: 'completed', completedAt: new Date().toISOString() });
+    }
+
     clearInterval(timerInterval);
     timerRunning = false;
     timerSeconds = 0;
     timerSubject = '';
+    
+    // reset select
+    if (assignmentSelect) assignmentSelect.value = '';
+    if (completeCheck) completeCheck.checked = false;
+
     showToast(`${minutes}分の勉強を記録しました！🎉`, 'success');
     renderStudyTime(container);
   });
@@ -307,14 +385,37 @@ function setupStudyTimeEvents(container, settings) {
       showToast('教科と時間を入力してください', 'warning');
       return;
     }
+    const assignmentSelect = document.getElementById('manual-assignment');
+    const completeCheck = document.getElementById('manual-complete-hw');
+    const assignmentId = assignmentSelect ? assignmentSelect.value : null;
+    const isComplete = completeCheck ? completeCheck.checked : false;
+
+    let assignmentContent = null;
+    if (assignmentId) {
+      const a = getAssignments(selectedStudentId).find(x => x.id === assignmentId);
+      if (a) assignmentContent = a.content;
+    }
+
     addStudyLog({
       studentId: selectedStudentId,
       subject,
       date: formatDate(new Date()),
       duration,
       method: 'manual',
+      assignmentId,
+      assignmentContent
     });
-    showToast(`${subject} ${duration}分を記録しました！`, 'success');
+
+    if (assignmentId && isComplete) {
+      updateAssignment(assignmentId, { status: 'completed', completedAt: new Date().toISOString() });
+    }
+
+    if (assignmentSelect) assignmentSelect.value = '';
+    if (completeCheck) completeCheck.checked = false;
+    
+    document.getElementById('manual-subject').value = '';
+    document.getElementById('manual-duration').value = '';
+    showToast(`${duration}分の勉強を記録しました！🎉`, 'success');
     renderStudyTime(container);
   });
 

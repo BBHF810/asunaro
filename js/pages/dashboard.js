@@ -140,8 +140,8 @@ function renderStudentDashboard(container, user) {
         <div class="todo-list animate-slideUp">
           ${pendingAssignments.slice(0, 5).map(a => `
             <div class="todo-item" data-id="${a.id}">
-              <button class="btn btn-sm btn-primary todo-check" data-assignment-id="${a.id}" aria-label="完了にする">
-                完了
+              <button class="btn btn-sm btn-primary todo-study-btn" onclick="location.hash='#/study-time'" aria-label="勉強時間ページへ">
+                勉強する
               </button>
               <div class="todo-content">
                 <span class="badge badge-sm" style="background: ${settings.subjectColors[a.subject] || '#666'}30; color: ${settings.subjectColors[a.subject] || '#999'}">${a.subject}</span>
@@ -152,7 +152,7 @@ function renderStudentDashboard(container, user) {
             </div>
           `).join('')}
           ${pendingAssignments.length > 5 ? `
-            <button class="btn btn-ghost btn-sm" onclick="location.hash='#/homework'" style="width:100%; margin-top: var(--space-2)">
+            <button class="btn btn-ghost btn-sm" onclick="location.hash='#/schedule'" style="width:100%; margin-top: var(--space-2)">
               他 ${pendingAssignments.length - 5} 件の宿題を見る →
             </button>
           ` : ''}

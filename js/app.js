@@ -5,7 +5,6 @@ import { restoreSession, isLoggedIn, getCurrentUser, logout } from './auth.js';
 import { renderLogin } from './pages/login.js';
 import { renderDashboard } from './pages/dashboard.js';
 import { renderSchedule } from './pages/schedule.js';
-import { renderHomework } from './pages/homework.js';
 import { renderTests } from './pages/tests.js';
 import { renderStudyTime } from './pages/study-time.js';
 import { renderStats } from './pages/stats.js';
@@ -43,12 +42,6 @@ function registerRoutes() {
     title: '週間予定表',
     render: renderSchedule,
     roles: ['teacher', 'student', 'parent'],
-  });
-
-  addRoute('/homework', {
-    title: '宿題管理',
-    render: renderHomework,
-    roles: ['teacher', 'student'],
   });
 
   addRoute('/tests', {
