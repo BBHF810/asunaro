@@ -65,8 +65,8 @@ function renderTeacherDashboard(container, user) {
           ` : ''}
         </div>
         <div class="card-footer">
-          <button class="btn btn-sm btn-ghost" onclick="location.hash='#/schedule?student=${student.id}'">予定表</button>
-          <button class="btn btn-sm btn-primary" onclick="location.hash='#/homework?student=${student.id}'">宿題管理</button>
+          <button class="btn btn-sm btn-ghost" onclick="location.hash='#/study-time?student=${student.id}'">勉強時間</button>
+          <button class="btn btn-sm btn-primary" onclick="location.hash='#/schedule?student=${student.id}'">予定表</button>
         </div>
       </div>
     `;

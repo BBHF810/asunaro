@@ -4,6 +4,7 @@
  */
 
 import { isLoggedIn, canAccess } from './auth.js';
+import { showToast } from './app.js';
 
 const routes = {};
 let currentPath = null;
@@ -55,6 +56,7 @@ async function handleRoute() {
   if (!route) {
     if (isLoggedIn()) {
       navigate('/dashboard');
+      setTimeout(() => showToast('ページが見つかりませんでした', 'warning'), 100);
     } else {
       navigate('/login');
     }
