@@ -9,6 +9,7 @@ import { renderTests } from './pages/tests.js';
 import { renderStudyTime } from './pages/study-time.js';
 import { renderStats } from './pages/stats.js';
 import { renderSettings } from './pages/settings.js';
+import { renderMaterials } from './pages/materials.js';
 import { renderSidebar } from './components/sidebar.js';
 
 // アプリ初期化
@@ -66,6 +67,12 @@ function registerRoutes() {
     title: '設定',
     render: renderSettings,
     roles: ['teacher', 'student', 'parent'],
+  });
+
+  addRoute('/materials', {
+    title: '教材ライブラリ',
+    render: renderMaterials,
+    roles: ['teacher'],
   });
 }
 

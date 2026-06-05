@@ -9,6 +9,7 @@ const NAV_ITEMS = {
     { path: '/tests', icon: '📊', label: 'テスト結果' },
     { path: '/study-time', icon: '⏱️', label: '勉強時間' },
     { path: '/stats', icon: '📈', label: '学習統計' },
+    { path: '/materials', icon: '📚', label: '教材ライブラリ' },
     { path: '/settings', icon: '⚙️', label: '設定' },
   ],
   student: [
